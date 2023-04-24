@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
+import { Icons } from "@/components/icons"
 
 export default function IndexPage() {
   return (
@@ -14,9 +15,6 @@ export default function IndexPage() {
         <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl">
           This is a demo of Echo3D's 3D model hosting service. It uses Next.js
           and Echo3D's JavaScript SDK to display a 3D model of a burger.
-          <br />
-          <br />
-          You can view the source code for this demo on{" "}
         </p>
       </div>
       <div className="flex gap-4">
@@ -26,7 +24,7 @@ export default function IndexPage() {
           rel="noreferrer"
           className={buttonVariants({ size: "lg" })}
         >
-          Documentation
+          Echo3D documentation
         </Link>
         <Link
           target="_blank"
@@ -34,7 +32,10 @@ export default function IndexPage() {
           href={siteConfig.links.github}
           className={buttonVariants({ variant: "outline", size: "lg" })}
         >
-          GitHub
+          {/* add github icon */}
+        <Icons.gitHub className="h-5 w-5 mr-2" />
+
+          Source Code
         </Link>
       </div>
 

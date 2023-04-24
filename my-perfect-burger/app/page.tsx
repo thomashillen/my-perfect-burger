@@ -3,6 +3,7 @@ import Link from "next/link"
 import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
+import { BurgerCustomizationArea } from "@/components/BurgerCustomizationArea"
 
 export default function IndexPage() {
   return (
@@ -42,6 +43,7 @@ export default function IndexPage() {
       {/* burger builder container containing the 3d model app and all its buttons */}
       <div className="flex flex-col items-center justify-center w-full h-full max-w-[980px]">
         app goes here
+        <BurgerCustomizationArea />
       </div>
       
 

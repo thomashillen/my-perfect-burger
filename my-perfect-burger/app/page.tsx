@@ -2,8 +2,8 @@ import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
+import BurgerCustomizationArea from "@/components/BurgerCustomizationArea"
 import { Icons } from "@/components/icons"
-import { BurgerCustomizationArea } from "@/components/BurgerCustomizationArea"
 
 export default function IndexPage() {
   return (
@@ -13,7 +13,7 @@ export default function IndexPage() {
           My Perfect Burger <br className="hidden sm:inline" />
           an Echo3D demo
         </h1>
-        <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl">
+        <p className="text-muted-foreground max-w-[700px] text-lg sm:text-xl">
           This is a demo of Echo3D's 3D model hosting service. It uses Next.js
           and Echo3D's JavaScript SDK to display a 3D model of a burger.
         </p>
@@ -34,20 +34,15 @@ export default function IndexPage() {
           className={buttonVariants({ variant: "outline", size: "lg" })}
         >
           {/* add github icon */}
-        <Icons.gitHub className="h-5 w-5 mr-2" />
-
+          <Icons.gitHub className="mr-2 h-5 w-5" />
           Source Code
         </Link>
       </div>
 
       {/* burger builder container containing the 3d model app and all its buttons */}
-      <div className="flex flex-col items-center justify-center w-full h-full max-w-[980px]">
-        app goes here
+      <div className="flex h-full w-full max-w-[980px] flex-col items-center justify-center">
         <BurgerCustomizationArea />
       </div>
-      
-
-
     </section>
   )
 }

@@ -74,7 +74,6 @@ const BurgerCustomizationArea = () => {
         <Card>
           <CardHeader>
             <CardTitle>Burger Builder</CardTitle>
- 
           </CardHeader>
           <CardContent>
             <div
@@ -83,7 +82,6 @@ const BurgerCustomizationArea = () => {
               className="w-full w-[300px]"
             ></div>
           </CardContent>
-
         </Card>
         <div>
           <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} />

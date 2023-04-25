@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import BurgerCustomizationArea from "@/components/BurgerCustomizationArea"
 import { Icons } from "@/components/icons"
 
@@ -11,11 +11,11 @@ export default function IndexPage() {
       <div className="flex max-w-[980px] flex-col items-start gap-2">
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter sm:text-3xl md:text-5xl lg:text-6xl">
           My Perfect Burger <br className="hidden sm:inline" />
-          {/* an Echo3D demo */}
         </h1>
-        <p className="text-muted-foreground max-w-[700px] text-lg sm:text-xl">
-          This is a demo of Echo3D&apos;s 3D model hosting service. It uses Next.js
-          and Echo3D&apos;s JavaScript SDK to display a 3D model of a burger.
+        <p className="text-muted-foreground max-w-[700px] md:text-lg ">
+          This is a demo of Echo3D&apos;s 3D model hosting service. It uses
+          Next.js and Echo3D&apos;s JavaScript SDK to display a 3D model of a
+          burger.
         </p>
       </div>
       <div className="flex gap-4">
@@ -25,7 +25,7 @@ export default function IndexPage() {
           rel="noreferrer"
           className={buttonVariants({ size: "lg" })}
         >
-          Echo3D documentation
+          Echo3D docs
         </Link>
         <Link
           target="_blank"
@@ -33,7 +33,6 @@ export default function IndexPage() {
           href={siteConfig.links.github}
           className={buttonVariants({ variant: "outline", size: "lg" })}
         >
-          {/* add github icon */}
           <Icons.gitHub className="mr-2 h-5 w-5" />
           Source Code
         </Link>

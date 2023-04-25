@@ -1,14 +1,10 @@
-import React from "react"
+import React from "react";
 
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast"
 
 const ingredients = [
   { id: 1, name: "Lettuce", assetUrl: "path/to/lettuce-3d-model" },
@@ -46,37 +42,17 @@ const IngredientSelectionPanel: React.FC<IngredientSelectionPanelProps> = ({
                 onClick={() => onIngredientAdd(ingredient)}
                 color="primary"
                 variant="default"
-                className="w-"
+              // className="w-full"
               >
                 {ingredient.name}
               </Button>
             ))}
           </div>
         </CardContent>
-        <CardFooter>
-          <p>
-            Once you're done, download your perfect burger and share on social
-            media!
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="flex content-center items-center justify-center w-full mt-4"
-            >
-              <polyline points="7 13 12 18 17 13"></polyline>
-              <polyline points="7 6 12 11 17 6"></polyline>
-            </svg>
-          </p>
-        </CardFooter>
+        
       </Card>
     </div>
   )
-}
+};
 
 export default IngredientSelectionPanel

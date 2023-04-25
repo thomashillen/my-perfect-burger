@@ -11,16 +11,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useToast } from "@/components/ui/use-toast"
 
 import DownloadSharePanel from "./DownloadSharePanel"
 import IngredientSelectionPanel from "./IngredientSelectionPanel"
 
 const BurgerCustomizationArea = () => {
+  const { toast } = useToast()
   const containerRef = useRef<HTMLDivElement | null>(null)
 
   const handleIngredientAdd = (ingredient) => {
     console.log("Ingredient added:", ingredient)
     // Add the selected ingredient to the 3D scene
+
+    toast({
+      title: `${ingredient.name} added to burger!`,
+      description: `You have added ${ingredient.name} to your burger.`,
+      // duration: 5000,
+      // isClosable: true,
+    });
+    alert("ingredient added!");
   }
 
   useEffect(() => {
@@ -31,14 +41,24 @@ const BurgerCustomizationArea = () => {
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(
       75,
-      containerRef.current.offsetWidth / 300,
+      containerRef.current.offsetWidth / containerRef.current.offsetHeight,
       0.1,
       1000
     )
     const renderer = new THREE.WebGLRenderer({ alpha: true })
 
+    const updateSize = () => {
+      renderer.setSize(
+        containerRef.current.offsetWidth,
+        containerRef.current.offsetHeight
+      )
+      camera.aspect =
+        containerRef.current.offsetWidth / containerRef.current.offsetHeight
+      camera.updateProjectionMatrix()
+    }
+
     renderer.setClearColor(0x000000, 0) // Set clear color to transparent
-    renderer.setSize(containerRef.current.offsetWidth, 300)
+    updateSize()
     containerRef.current.appendChild(renderer.domElement)
 
     // Replace the following example geometry and material with your burger 3D model(s)
@@ -60,33 +80,38 @@ const BurgerCustomizationArea = () => {
       renderer.render(scene, camera)
     }
 
+    const onWindowResize = () => {
+      updateSize()
+    }
+
+    window.addEventListener("resize", onWindowResize)
+
     animate()
 
     return () => {
       renderer.dispose()
       containerRef.current?.removeChild(renderer.domElement)
+      window.removeEventListener("resize", onWindowResize)
     }
   }, [])
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="flex flex-col md:flex-row gap-6 w-full">
-        <Card>
-          <CardHeader>
-            <CardTitle>Burger Builder</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div
-              ref={containerRef}
-              id="burger-customization-area"
-              className="w-full w-[300px]"
-            ></div>
-          </CardContent>
-        </Card>
-        <div>
-          <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} />
-          <DownloadSharePanel />
-        </div>
+    <div className="flex flex-col md:flex-row gap-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Burger Builder</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div
+            ref={containerRef}
+            id="burger-customization-area"
+            className="w-full min-w-[200px] max-w-[250px] md:max-w-[500px] h-[300px]"
+          ></div>
+        </CardContent>
+      </Card>
+      <div>
+        <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} />
+        <DownloadSharePanel />
       </div>
     </div>
   )

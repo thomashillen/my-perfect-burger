@@ -13,7 +13,7 @@ export const siteConfig = {
   links: {
     github: "https://github.com/thomashillen/my-perfect-burger",
     docs: "https://docs.echo3d.com/",
-    twitter: "https://twitter.com/shadcn",
-    burgerBuilder: "/burger-builder",
+    twitter: "https://twitter.com/thomas_hillen",
+    // burgerBuilder: "/burger-builder",
   },
 }

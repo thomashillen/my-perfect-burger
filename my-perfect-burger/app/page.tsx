@@ -14,8 +14,8 @@ export default function IndexPage() {
           {/* an Echo3D demo */}
         </h1>
         <p className="text-muted-foreground max-w-[700px] text-lg sm:text-xl">
-          This is a demo of Echo3D's 3D model hosting service. It uses Next.js
-          and Echo3D's JavaScript SDK to display a 3D model of a burger.
+          This is a demo of Echo3D&apos;s 3D model hosting service. It uses Next.js
+          and Echo3D&apos;s JavaScript SDK to display a 3D model of a burger.
         </p>
       </div>
       <div className="flex gap-4">

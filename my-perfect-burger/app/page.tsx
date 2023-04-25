@@ -11,7 +11,7 @@ export default function IndexPage() {
       <div className="flex max-w-[980px] flex-col items-start gap-2">
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter sm:text-3xl md:text-5xl lg:text-6xl">
           My Perfect Burger <br className="hidden sm:inline" />
-          an Echo3D demo
+          {/* an Echo3D demo */}
         </h1>
         <p className="text-muted-foreground max-w-[700px] text-lg sm:text-xl">
           This is a demo of Echo3D's 3D model hosting service. It uses Next.js

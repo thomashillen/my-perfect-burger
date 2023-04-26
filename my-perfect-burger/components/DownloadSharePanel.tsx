@@ -42,7 +42,7 @@ const DownloadSharePanel = () => {
   const title = "Check out my perfect burger!"
 
   return (
-    <div className="w-full flex flex-row items-center justify-center gap-4 mt-4 max-w-sm">
+    <div className="mt-4 flex w-full max-w-sm flex-row items-center justify-center gap-4">
       <Card>
         <CardHeader>
           <CardTitle>Download & Share</CardTitle>
@@ -51,7 +51,7 @@ const DownloadSharePanel = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4 justify-center">
+          <div className="flex justify-center gap-4">
           <AlertDialog>
             <AlertDialogTrigger>
               <Button color="primary" variant={"outline"} className="px-2">

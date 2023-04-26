@@ -23,18 +23,18 @@ export default function IndexPage() {
           href={siteConfig.links.docs}
           target="_blank"
           rel="noreferrer"
-          className={buttonVariants({ size: "lg" })}
+          className={buttonVariants({  })}
         >
+          <Icons.docs className="mr-4 h-5 w-5" />
           Echo3D docs
         </Link>
         <Link
           target="_blank"
           rel="noreferrer"
           href={siteConfig.links.github}
-          className={buttonVariants({ variant: "outline", size: "lg" })}
+          className={buttonVariants({ variant: "outline" })}
         >
-          <Icons.gitHub className="mr-2 h-5 w-5" />
-          Source Code
+          <Icons.gitHub className=" h-5 w-5" />
         </Link>
       </div>
 

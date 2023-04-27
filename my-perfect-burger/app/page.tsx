@@ -39,7 +39,7 @@ export default function IndexPage() {
       </div>
 
       {/* burger builder container containing the 3d model app and all its buttons */}
-      <div className="flex h-full w-full max-w-[980px] flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <BurgerCustomizationArea />
       </div>
     </section>

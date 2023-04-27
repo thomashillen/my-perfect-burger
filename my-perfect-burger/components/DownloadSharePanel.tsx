@@ -1,6 +1,8 @@
+// "use client";
 import React from "react"
 import html2canvas from "html2canvas"
 import { FacebookShareButton, TwitterShareButton } from "react-share"
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,8 +25,6 @@ import {
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 
-
-
 const DownloadSharePanel = () => {
   const downloadImage = async () => {
     const burgerContainer = document.getElementById("burger-customization-area")
@@ -44,8 +44,8 @@ const DownloadSharePanel = () => {
   const title = "Check out my perfect burger!"
 
   return (
-    <div className="mt-4 flex w-full max-w-sm flex-row items-center justify-center gap-4">
-      <Card>
+    <div >
+      <Card >
         <CardHeader>
           <CardTitle>Download & Share</CardTitle>
           <CardDescription>
@@ -54,38 +54,38 @@ const DownloadSharePanel = () => {
         </CardHeader>
         <CardContent>
           <div className="flex justify-center gap-4">
-          <AlertDialog>
-            <AlertDialogTrigger>
-              <Button color="primary" variant={"outline"} className="px-2">
-              <Icons.download className="h-5 w-5" />
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <Button color="primary" variant={"outline"} className="px-2">
+                  <Icons.download className="h-5 w-5" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Download Image</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to download the image of your burger?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={downloadImage}>
+                    Download
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <FacebookShareButton url={shareUrl} quote={title}>
+              <Button color="primary" variant={"secondary"} className="w-24">
+                Share on Facebook
               </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Download Image</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to download the image of your burger?
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={downloadImage}>
-                  Download
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          <FacebookShareButton url={shareUrl} quote={title}>
-            <Button color="primary" variant={"secondary"} className="w-24">
-              Share on Facebook
-            </Button>
-          </FacebookShareButton>
-          <TwitterShareButton url={shareUrl} title={title}>
-            <Button color="primary" variant={"secondary"} className="w-24">
-              Share on Twitter
-            </Button>
+            </FacebookShareButton>
+            <TwitterShareButton url={shareUrl} title={title}>
+              <Button color="primary" variant={"secondary"} className="w-24">
+                Share on Twitter
+              </Button>
             </TwitterShareButton>
-            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

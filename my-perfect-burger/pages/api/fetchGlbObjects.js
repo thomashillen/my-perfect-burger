@@ -1,28 +1,23 @@
-// import { https } from 'follow-redirects';
+// fetchGlbObjects.js
+import axios from 'axios';
 
-// const apiKey = 'shrill-dew-9515';
-// const echo3Dserver = 'https://api.echo3D.co/query?';
-// const fileRequest = echo3Dserver + 'key=' + apiKey + '&file=';
+const apiKey = 'shrill-dew-9515';
+const echo3Dserver = 'https://api.echo3D.co/query?';
+const fileRequest = entryID => echo3Dserver + 'key=' + apiKey + '&file=' + entryID;
 
-// export default async function handler(req, res) {
-//   const requestUrl = echo3Dserver + 'key=' + apiKey;
-  
-//   https.get(requestUrl, (responseJSON) => {
-//     let json = '';
-    
-//     responseJSON.on('data', (d) => {
-//       json += d;
-//     });
-    
-//     responseJSON.on('end', () => {
-//       const obj = JSON.parse(json);
-      
-//       // Add your logic here to process the fetched data
-      
-//       res.status(200).json(obj);
-//     });
-//   }).on('error', (error) => {
-//     console.error(error);
-//     res.status(500).json({ error: 'An error occurred while fetching GLB objects from echo3D.' });
-//   });
-// }
+export default async function handler(req, res) {
+  const { entryID } = req.query;
+  const requestUrl = fileRequest(entryID);
+
+  try {
+    const response = await axios.get(requestUrl);
+    const obj = response.data;
+
+    // Add your logic here to process the fetched data
+
+    res.status(200).json(obj);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while fetching the GLB object from echo3D.' });
+  }
+}

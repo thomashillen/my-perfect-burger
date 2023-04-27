@@ -31,8 +31,8 @@ const IngredientSelectionPanel: React.FC<IngredientSelectionPanelProps> = ({
   onIngredientAdd,
 }) => {
   return (
-    <div className="flex max-w-sm flex-wrap gap-4">
-      <Card>
+    <div >
+      <Card className="w-100">
         <CardHeader>
           <CardTitle>Ingredient Selection</CardTitle>
           <CardDescription>
@@ -40,7 +40,7 @@ const IngredientSelectionPanel: React.FC<IngredientSelectionPanelProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 ">
+          <div className="grid grid-cols-2 gap-4">
             {ingredients.map((ingredient) => (
               <Button
                 key={ingredient.id}

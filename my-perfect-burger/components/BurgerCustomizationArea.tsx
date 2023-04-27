@@ -23,17 +23,17 @@ const BurgerCustomizationArea = () => {
       return
     }
 
-    // Fetch GLB objects from echo3D
-    fetch("/api/fetchGlbObjects")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("GLB objects fetched from echo3D:", data)
+    // // Fetch GLB objects from echo3D
+    // fetch("/api/fetchGlbObjects")
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     console.log("GLB objects fetched from echo3D:", data)
 
-        // Add your logic here to process the fetched GLB objects
-      })
-      .catch((error) => {
-        console.error("Error fetching GLB objects from echo3D:", error)
-      })
+    //     // Add your logic here to process the fetched GLB objects
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching GLB objects from echo3D:", error)
+    //   })
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(

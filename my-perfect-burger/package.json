@@ -16,6 +16,7 @@
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.3",
     "@radix-ui/react-toast": "^1.1.3",
+    "axios": "^1.3.6",
     "class-variance-authority": "^0.4.0",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
@@ -27,10 +28,12 @@
     "react-day-picker": "^8.6.0",
     "react-dom": "^18.2.0",
     "react-share": "^4.4.1",
+    "react-toastify": "^9.1.2",
     "sharp": "^0.31.3",
     "tailwind-merge": "^1.12.0",
     "tailwindcss-animate": "^1.0.5",
-    "three": "^0.151.3"
+    "three": "^0.151.3",
+    "three-stdlib": "^2.21.9"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^3.7.1",

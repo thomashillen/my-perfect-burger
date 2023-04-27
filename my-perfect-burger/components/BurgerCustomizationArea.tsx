@@ -1,11 +1,11 @@
-"use client"
-import React, { useEffect, useRef, useState } from "react"
-import * as THREE from "three"
-import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"
-import { OrbitControls } from "three-stdlib/controls/OrbitControls"
-import { toast } from "react-toastify"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader";
+import { OrbitControls } from "three-stdlib/controls/OrbitControls";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 import {
@@ -15,22 +15,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
-import DownloadSharePanel from "./DownloadSharePanel"
-import IngredientSelectionPanel from "./IngredientSelectionPanel"
-
+import DownloadSharePanel from "./DownloadSharePanel";
+import IngredientSelectionPanel from "./IngredientSelectionPanel";
 
 const BurgerCustomizationArea = () => {
-  const containerRef = useRef<HTMLDivElement | null>(null)
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const [glbObjects, setGlbObjects] = useState<{ url: string } | null>(null);
 
   const handleIngredientAdd = (ingredient) => {
-    console.log("Ingredient added:", ingredient)
+    console.log("Ingredient added:", ingredient);
     // Add the selected ingredient to the 3D scene
 
-    toast.success("Ingredient added!")
-  }
+    toast.success("Ingredient added!");
+  };
 
   const fetchGlbObject = async (entryID) => {
     try {
@@ -49,19 +48,35 @@ const BurgerCustomizationArea = () => {
     fetchGlbObject("de8f1550-78f0-451a-b80a-1a745f472741");
   }, []);
 
+  const addSpinningCube = (scene) => {
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.name = "spinningCube";
+    scene.add(cube);
+    cube.position.set(0, 0, 0);
+
+    const animateCube = () => {
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+    };
+
+    return animateCube;
+  };
+
   useEffect(() => {
     if (!containerRef.current || !glbObjects) {
-      return
+      return;
     }
 
-    const scene = new THREE.Scene()
+    const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
       containerRef.current.offsetWidth / containerRef.current.offsetHeight,
       0.1,
       1000
-    )
-    const renderer = new THREE.WebGLRenderer({ alpha: true })
+    );
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
 
     // Add OrbitControls for better user experience
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -72,13 +87,32 @@ const BurgerCustomizationArea = () => {
     controls.maxDistance = 100;
     controls.maxPolarAngle = Math.PI / 2;
 
+    
     // Load the fetched GLB object
+    let animateCube;
+
+    // Add spinning cube by default
+    animateCube = addSpinningCube(scene);
+
     const loader = new GLTFLoader();
     if (glbObjects && glbObjects.url) {
-      loader.load(glbObjects.url, (gltf) => {
-        const mesh = gltf.scene;
-        scene.add(mesh);
-      });
+      loader.load(
+        glbObjects.url,
+        (gltf) => {
+          const mesh = gltf.scene;
+          scene.add(mesh);
+
+          // Remove spinning cube if burger model loads successfully
+          const spinningCube = scene.getObjectByName("spinningCube");
+          if (spinningCube) {
+            scene.remove(spinningCube);
+          }
+        },
+        undefined,
+        (error) => {
+          console.error("Error loading GLTF model:", error);
+        }
+      );
     }
 
     const updateSize = () => {
@@ -104,8 +138,11 @@ const BurgerCustomizationArea = () => {
     const animate = () => {
       requestAnimationFrame(animate);
 
-      controls.update();
+      if (animateCube) {
+        animateCube();
+      }
 
+      controls.update();
       renderer.render(scene, camera);
     };
 
@@ -128,29 +165,27 @@ const BurgerCustomizationArea = () => {
 
   return (
     <>
-
-    <ToastContainer/>
-    <div className="flex flex-col gap-6 md:flex-row  ">
-      <Card>
-        <CardHeader>
-          <CardTitle>Burger Builder</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div
-            ref={containerRef}
-            id="burger-customization-area"
-            className="h-[300px] min-w-[200px] max-w-[250px] md:max-w-[500px]"
-          ></div>
-        </CardContent>
-      </Card>
-      <div className="flex flex-col gap-4 max-w-xs">
-        <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} />
-        <DownloadSharePanel />
+      <ToastContainer />
+      <div className="flex flex-col gap-6 md:flex-row">
+        <Card>
+          <CardHeader>
+            <CardTitle>Burger Builder</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div
+              ref={containerRef}
+              id="burger-customization-area"
+              className="h-[300px] min-w-[200px] max-w-[250px] md:max-w-[500px]"
+            ></div>
+          </CardContent>
+        </Card>
+        <div className="flex max-w-xs flex-col gap-4">
+          <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} />
+          <DownloadSharePanel />
+        </div>
       </div>
-    </div>
-
     </>
-  )
-}
+  );
+};
 
-export default BurgerCustomizationArea
+export default BurgerCustomizationArea;

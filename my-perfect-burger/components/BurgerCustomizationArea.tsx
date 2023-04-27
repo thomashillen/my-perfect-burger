@@ -3,33 +3,18 @@
 import React, { useEffect, useRef } from "react"
 import * as THREE from "three"
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import DownloadSharePanel from "./DownloadSharePanel"
 import IngredientSelectionPanel from "./IngredientSelectionPanel"
 
 const BurgerCustomizationArea = () => {
-  const { toast } = useToast()
   const containerRef = useRef<HTMLDivElement | null>(null)
 
   const handleIngredientAdd = (ingredient) => {
     console.log("Ingredient added:", ingredient)
     // Add the selected ingredient to the 3D scene
 
-    toast({
-      title: `${ingredient.name} added to burger!`,
-      description: `You have added ${ingredient.name} to your burger.`,
-      // duration: 5000,
-      // isClosable: true,
-    })
     alert("ingredient added!")
   }
 
@@ -39,18 +24,17 @@ const BurgerCustomizationArea = () => {
     }
 
     // Fetch GLB objects from echo3D
-    fetch('/api/fetchGlbObjects')
+    fetch("/api/fetchGlbObjects")
       .then((response) => response.json())
       .then((data) => {
-        console.log('GLB objects fetched from echo3D:', data);
-        
+        console.log("GLB objects fetched from echo3D:", data)
+
         // Add your logic here to process the fetched GLB objects
-        
       })
       .catch((error) => {
-        console.error('Error fetching GLB objects from echo3D:', error);
-      });
-  
+        console.error("Error fetching GLB objects from echo3D:", error)
+      })
+
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -59,12 +43,12 @@ const BurgerCustomizationArea = () => {
       1000
     )
     const renderer = new THREE.WebGLRenderer({ alpha: true })
-  
+
     const updateSize = () => {
       if (!containerRef.current) {
         return
       }
-  
+
       renderer.setSize(
         containerRef.current.offsetWidth,
         containerRef.current.offsetHeight
@@ -73,41 +57,41 @@ const BurgerCustomizationArea = () => {
         containerRef.current.offsetWidth / containerRef.current.offsetHeight
       camera.updateProjectionMatrix()
     }
-  
+
     renderer.setClearColor(0x000000, 0) // Set clear color to transparent
     updateSize()
     containerRef.current.appendChild(renderer.domElement)
-  
+
     // Replace the following example geometry and material with your burger 3D model(s)
     const geometry = new THREE.BoxGeometry()
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
     const cube = new THREE.Mesh(geometry, material)
-  
+
     scene.add(cube)
     camera.position.z = 5
-  
+
     const animate = () => {
       requestAnimationFrame(animate)
-  
+
       // Update the 3D scene here, e.g., by adding or removing burger ingredients based on the burger's state
-  
+
       cube.rotation.x += 0.01
       cube.rotation.y += 0.01
-  
+
       renderer.render(scene, camera)
     }
-  
+
     const onWindowResize = () => {
       updateSize()
     }
-  
+
     window.addEventListener("resize", onWindowResize)
-  
+
     animate()
-  
+
     // Copy the containerRef.current value to a variable inside the effect
     const currentContainerRef = containerRef.current
-  
+
     return () => {
       renderer.dispose()
       // Use the variable in the cleanup function

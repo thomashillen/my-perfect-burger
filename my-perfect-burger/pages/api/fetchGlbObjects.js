@@ -1,4 +1,4 @@
-import https from 'follow-redirects/https';
+import { https } from 'follow-redirects';
 
 const apiKey = 'shrill-dew-9515';
 const echo3Dserver = 'https://api.echo3D.co/query?';

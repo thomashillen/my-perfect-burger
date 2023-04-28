@@ -76,8 +76,8 @@ const BurgerCustomizationArea = () => {
   const loadObjectFromEntryID = async (scene: THREE.Scene, entryID: string) => {
     const loader = new GLTFLoader()
 
-    const db = echoDB[db]
-    const objectData = db.find((item) => item.id === entryID)
+
+    const objectData = echoDB["db"].find((item) => item.id === entryID)
     if (objectData) {
       const glbURL = objectData.glb_url
 
@@ -181,8 +181,8 @@ const BurgerCustomizationArea = () => {
           </CardContent>
         </Card>
         <div className="flex max-w-xs flex-col gap-4">
-          <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} />
-          <DownloadSharePanel />
+          {/* <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} /> */}
+          {/* <DownloadSharePanel /> */}
         </div>
       </div>
     </>

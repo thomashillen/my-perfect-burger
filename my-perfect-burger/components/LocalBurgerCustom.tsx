@@ -190,7 +190,7 @@ const BurgerCustomizationArea = () => {
                 <CardTitle>Ingredient Selection</CardTitle>
                 <CardDescription>
                   Click on the ingredients to add/remove them from the burger
-                  stack{" "}
+                  stack!{" "}
                 </CardDescription>
               </CardHeader>
               <CardContent>

@@ -78,6 +78,11 @@ const BurgerCustomizationArea = () => {
       1000
     )
     const renderer = new THREE.WebGLRenderer({ alpha: true })
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(
+      containerRef.current.offsetWidth * 1000,
+      containerRef.current.offsetHeight * 1000
+    )
 
     camera.position.z = 15
     camera.position.y = 4

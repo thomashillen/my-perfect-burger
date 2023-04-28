@@ -44,8 +44,8 @@ const DownloadSharePanel = () => {
   const title = "Check out my perfect burger!"
 
   return (
-    <div >
-      <Card >
+    <div>
+      <Card>
         <CardHeader>
           <CardTitle>Download & Share</CardTitle>
           <CardDescription>
@@ -75,16 +75,17 @@ const DownloadSharePanel = () => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-            <FacebookShareButton url={shareUrl} quote={title}>
-              <Button color="primary" variant={"secondary"} className="w-24">
+
+            <Button color="primary" variant={"secondary"} className="w-24">
+              <FacebookShareButton url={shareUrl} quote={title}>
                 Share on Facebook
-              </Button>
-            </FacebookShareButton>
-            <TwitterShareButton url={shareUrl} title={title}>
-              <Button color="primary" variant={"secondary"} className="w-24">
+              </FacebookShareButton>
+            </Button>
+            <Button color="primary" variant={"secondary"} className="w-24">
+              <TwitterShareButton url={shareUrl} title={title}>
                 Share on Twitter
-              </Button>
-            </TwitterShareButton>
+              </TwitterShareButton>
+            </Button>
           </div>
         </CardContent>
       </Card>

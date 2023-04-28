@@ -112,7 +112,7 @@ const BurgerCustomizationArea = () => {
     const animate = () => {
       requestAnimationFrame(animate)
       //   controls.update()
-      scene.rotation.y += 0.01
+      scene.rotation.y += 0.002
       renderer.render(scene, camera)
     }
 
@@ -126,15 +126,16 @@ const BurgerCustomizationArea = () => {
 
     const currentContainerRef = containerRef.current
 
-    const light = new THREE.PointLight(0xffffff, 1, 100)
+    const light = new THREE.PointLight(0xffffff, 0.5, 100)
     light.position.set(10, 10, 20)
     scene.add(light)
 
-    const light2 = new THREE.PointLight(0xffffff, 1, 100)
+    const light2 = new THREE.PointLight(0xffffff, 0.5, 100)
     light2.position.set(-10, -10, -20)
     scene.add(light2)
-    scene.add(new THREE.AmbientLight(0xf7caa8,0.7,100)) 
-    const color="#404040"
+
+    scene.add(new THREE.AmbientLight(0xfff0e3,0.9)) 
+
 
 
     return () => {
@@ -194,19 +195,19 @@ const BurgerCustomizationArea = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
-                  <Button onClick={() => handleObjectToggle("/patty.glb")}>
+                  <Button onClick={() => handleObjectToggle("/patty.glb")} variant="outline" className="bg-yellow-900 text-white border-zinc-500">
                     <Icons.patty />
                     Patty
                   </Button>
-                  <Button onClick={() => handleObjectToggle("/tomato.glb")}>
+                  <Button onClick={() => handleObjectToggle("/tomato.glb")} variant="outline" className="bg-red-500 text-white border-zinc-500">
                     <Icons.tomato />
                     Tomato
                   </Button>
-                  <Button onClick={() => handleObjectToggle("/lettuce.glb")}>
+                  <Button onClick={() => handleObjectToggle("/lettuce.glb")}variant="outline" className="bg-lime-600 text-white border-zinc-500">
                     <Icons.lettuce />
                     Lettuce
                   </Button>
-                  <Button onClick={() => handleObjectToggle("/cheese.glb")}>
+                  <Button onClick={() => handleObjectToggle("/cheese.glb")}variant="outline" className="bg-yellow-500 text-white border-zinc-500">
                     <Icons.cheese />
                     Cheese
                   </Button>
@@ -215,7 +216,7 @@ const BurgerCustomizationArea = () => {
             </Card>
 
             {/* <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} /> */}
-            {/* <DownloadSharePanel /> */}
+            <DownloadSharePanel />
           </div>
         </div>
       </div>

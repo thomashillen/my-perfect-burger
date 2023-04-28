@@ -1,12 +1,13 @@
-"use client";
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader";
-import { OrbitControls } from "three-stdlib/controls/OrbitControls";
-import { toast } from "react-toastify";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+"use client"
+
+import React, { useEffect, useRef, useState } from "react"
+import { ToastContainer, toast } from "react-toastify"
+import * as THREE from "three"
+import { OrbitControls } from "three-stdlib/controls/OrbitControls"
+import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"
+
+import "react-toastify/dist/ReactToastify.css"
+import axios from "axios"
 
 import {
   Card,
@@ -15,153 +16,153 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 
-import DownloadSharePanel from "./DownloadSharePanel";
-import IngredientSelectionPanel from "./IngredientSelectionPanel";
+import DownloadSharePanel from "./DownloadSharePanel"
+import IngredientSelectionPanel from "./IngredientSelectionPanel"
 
 const BurgerCustomizationArea = () => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [glbObjects, setGlbObjects] = useState<{ url: string } | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [scene, setScene] = useState<THREE.Scene | null>(null)
+  const [echoDB, setEchoDB] = useState<any[]>([])
 
-  const handleIngredientAdd = (ingredient) => {
-    console.log("Ingredient added:", ingredient);
-    // Add the selected ingredient to the 3D scene
-
-    toast.success("Ingredient added!");
-  };
-
-  const fetchGlbObject = async (entryID) => {
+  // Fetch echo3D data
+  const fetchEcho3DData = async () => {
     try {
-      const response = await axios.get(`/api/fetchGlbObjects?entryID=${entryID}`);
-      const glbObject = response.data;
-
-      setGlbObjects(glbObject);
-      console.log("GLB object:", glbObject);
+      const apiKey = "shrill-dew-9515"
+      const response = await axios.get(
+        "https://api.echo3D.com/query?key=" + apiKey
+      )
+      const json = response.data
+      setEchoDB(json)
+      const EchoDB = json
+      console.log(json)
+      // console.log(typeof echoDB);
     } catch (error) {
-      console.error("Error fetching GLB object:", error);
+      console.error("Error fetching echo3D data:", error)
     }
-  };
+  }
 
   useEffect(() => {
-    // Replace "de8f1550-78f0-451a-b80a-1a745f472741" with the entry-ID you want to fetch
-    fetchGlbObject("de8f1550-78f0-451a-b80a-1a745f472741");
-  }, []);
+    fetchEcho3DData()
+    if (containerRef.current) {
+      const width = containerRef.current.clientWidth
+      const height = containerRef.current.clientHeight
+      console.log("width: " + width)
+      console.log("height: " + height)
+      // Set up Three.js scene
+      const scene = new THREE.Scene()
+      setScene(scene)
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        containerRef.current.offsetWidth / containerRef.current.offsetHeight,
+        0.1,
+        1000
+      )
+      const renderer = new THREE.WebGLRenderer({ alpha: true })
+      const controls = new OrbitControls(camera, renderer.domElement)
+    }
+  }, [])
 
-  const addSpinningCube = (scene) => {
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    cube.name = "spinningCube";
-    scene.add(cube);
-    cube.position.set(0, 0, 0);
+  const handleIngredientAdd = async (entryID: string) => {
+    if (scene) {
+      await loadObjectFromEntryID(scene, entryID)
+      toast.success("Ingredient added!")
+    } else {
+      toast.error("Scene not ready.")
+    }
+  }
 
-    const animateCube = () => {
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-    };
+  const loadObjectFromEntryID = async (scene: THREE.Scene, entryID: string) => {
+    const loader = new GLTFLoader()
 
-    return animateCube;
-  };
+    const db = echoDB[db]
+    const objectData = db.find((item) => item.id === entryID)
+    if (objectData) {
+      const glbURL = objectData.glb_url
+
+      loader.load(
+        glbURL,
+        (gltf) => {
+          scene.add(gltf.scene)
+        },
+        undefined,
+        (error) => {
+          console.error("An error occurred while loading the object:", error)
+          toast.error("An error occurred while loading the object")
+        }
+      )
+    } else {
+      console.error("Object not found in echoDB")
+      toast.error("Object not found in echoDB")
+    }
+  }
 
   useEffect(() => {
-    if (!containerRef.current || !glbObjects) {
-      return;
+    if (!containerRef.current) {
+      return
     }
 
-    const scene = new THREE.Scene();
+    const scene = new THREE.Scene()
+    setScene(scene)
     const camera = new THREE.PerspectiveCamera(
       75,
       containerRef.current.offsetWidth / containerRef.current.offsetHeight,
       0.1,
       1000
-    );
-    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    )
+    const renderer = new THREE.WebGLRenderer({ alpha: true })
 
-    // Add OrbitControls for better user experience
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.minDistance = 10;
-    controls.maxDistance = 100;
-    controls.maxPolarAngle = Math.PI / 2;
-
-    
-    // Load the fetched GLB object
-    let animateCube;
-
-    // Add spinning cube by default
-    animateCube = addSpinningCube(scene);
-
-    const loader = new GLTFLoader();
-    if (glbObjects && glbObjects.url) {
-      loader.load(
-        glbObjects.url,
-        (gltf) => {
-          const mesh = gltf.scene;
-          scene.add(mesh);
-
-          // Remove spinning cube if burger model loads successfully
-          const spinningCube = scene.getObjectByName("spinningCube");
-          if (spinningCube) {
-            scene.remove(spinningCube);
-          }
-        },
-        undefined,
-        (error) => {
-          console.error("Error loading GLTF model:", error);
-        }
-      );
-    }
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+    controls.dampingFactor = 0.05
+    controls.screenSpacePanning = false
+    controls.minDistance = 10
+    controls.maxDistance = 100
+    controls.maxPolarAngle = Math.PI / 2
 
     const updateSize = () => {
       if (!containerRef.current) {
-        return;
+        return
       }
 
       renderer.setSize(
         containerRef.current.offsetWidth,
         containerRef.current.offsetHeight
-      );
+      )
       camera.aspect =
-        containerRef.current.offsetWidth / containerRef.current.offsetHeight;
-      camera.updateProjectionMatrix();
-    };
+        containerRef.current.offsetWidth / containerRef.current.offsetHeight
+      camera.updateProjectionMatrix()
+    }
 
-    renderer.setClearColor(0x000000, 0); // Set clear color to transparent
-    updateSize();
-    containerRef.current.appendChild(renderer.domElement);
+    renderer.setClearColor(0x000000, 0)
+    updateSize()
+    containerRef.current.appendChild(renderer.domElement)
 
-    camera.position.z = 50;
+    camera.position.z = 0
 
     const animate = () => {
-      requestAnimationFrame(animate);
-
-      if (animateCube) {
-        animateCube();
-      }
-
-      controls.update();
-      renderer.render(scene, camera);
-    };
+      requestAnimationFrame(animate)
+      controls.update()
+      renderer.render(scene, camera)
+    }
 
     const onWindowResize = () => {
-      updateSize();
-    };
+      updateSize()
+    }
 
-    window.addEventListener("resize", onWindowResize);
+    window.addEventListener("resize", onWindowResize)
 
-    animate();
+    animate()
 
-    const currentContainerRef = containerRef.current;
+    const currentContainerRef = containerRef.current
 
     return () => {
-      renderer.dispose();
-      currentContainerRef?.removeChild(renderer.domElement);
-      window.removeEventListener("resize", onWindowResize);
-    };
-  }, [glbObjects]);
+      renderer.dispose()
+      currentContainerRef?.removeChild(renderer.domElement)
+      window.removeEventListener("resize", onWindowResize)
+    }
+  }, [containerRef])
 
   return (
     <>
@@ -185,7 +186,7 @@ const BurgerCustomizationArea = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default BurgerCustomizationArea;
+export default BurgerCustomizationArea

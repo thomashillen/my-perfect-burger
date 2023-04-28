@@ -12,10 +12,10 @@ import {
 import { Icons } from "@/components/icons"
 
 const ingredients = [
-  { id: 1, name: "Lettuce", assetUrl: "path/to/lettuce-3d-model", icon: <Icons.lettuce/> },
-  { id: 2, name: "Tomato", assetUrl: "path/to/tomato-3d-model" , icon: <Icons.tomato/>},
-  { id: 3, name: "Cheese", assetUrl: "path/to/cheese-3d-model" , icon: <Icons.cheese/>},
-  { id: 4, name: "Patty", assetUrl: "path/to/patty-3d-model" , icon: <Icons.patty/>},
+  { id: 1, name: "Lettuce", entryID: "82361576-6ac4-45c8-9a25-9bca0867ab13", icon: <Icons.lettuce/> },
+  { id: 2, name: "Tomato", entryID: "7858a907-64aa-4397-95ff-e24bdebdbcbe" , icon: <Icons.tomato/>},
+  { id: 3, name: "Cheese", entryID: "b42018c2-61ef-4bed-b622-60e15bb2f356" , icon: <Icons.cheese/>},
+  { id: 4, name: "Patty", entryID: "3fbb6d3e-2621-403e-a391-d9c5ae918015" , icon: <Icons.patty/>},
   // Add more ingredients as needed
 ]
 
@@ -23,7 +23,7 @@ interface IngredientSelectionPanelProps {
   onIngredientAdd: (ingredient: {
     id: number
     name: string
-    assetUrl: string
+    entryID: string
   }) => void
 }
 

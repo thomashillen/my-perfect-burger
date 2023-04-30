@@ -24,9 +24,9 @@ export default function IndexPage() {
           href={siteConfig.links.docs}
           target="_blank"
           rel="noreferrer"
-          className={buttonVariants({  })}
+          className={buttonVariants({ variant: "default" })}
         >
-          <Icons.docs className="mr-4 h-5 w-5" />
+          <Icons.docs className="mx-4 h-5 w-5" />
           Echo3D docs
         </Link>
         <Link

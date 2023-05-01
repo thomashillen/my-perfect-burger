@@ -26,6 +26,12 @@ const BurgerCustomizationArea = () => {
   const [buns, setBuns] = useState<THREE.Object3D | null>(null)
   // const [echoDB, setEchoDB] = useState<any>(null)
   const [loadedIngredients, setLoadedIngredients] = useState(false)
+  type IngredientObject = {
+    name: string;
+    entryID: string;
+    storageID: string;
+    blob?: Blob | null;
+  };
   const [ingredientObjects, setIngredientObjects] = useState<
     IngredientObject[]
   >([

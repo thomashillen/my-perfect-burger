@@ -25,6 +25,28 @@ const BurgerCustomizationArea = () => {
   const [objects, setObjects] = useState<THREE.Object3D[]>([])
   const [buns, setBuns] = useState<THREE.Object3D | null>(null)
 
+  // Fetch echo3D data
+  const fetchEcho3DData = async () => {
+    try {
+      const apiKey = "shrill-dew-9515"
+      const response = await fetch(
+        "https://api.echo3D.com/query?key=" + apiKey
+      )
+      const json = await response.json()
+      // setEchoDB(json)
+      const EchoDB = json
+      console.log(json)
+      // console.log(typeof echoDB);
+    } catch (error) {
+      console.error("Error fetching echo3D data:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchEcho3DData()
+    
+  }, [])
+
   const handleObjectToggle = async (objectURL: string) => {
     if (scene) {
       const existingObject = objects.find(
@@ -173,9 +195,9 @@ const BurgerCustomizationArea = () => {
   return (
     <>
       <ToastContainer />
-      <div className="relative">
+      <div className="relative w-full">
         <div className="flex h-full w-full flex-col items-center justify-center gap-6 md:flex-row">
-          <Card className="h-full w-full">
+          <Card className="h-[500px] md:max-w-[50%] w-full">
             <CardHeader>
               <CardTitle>Burger Builder</CardTitle>
             </CardHeader>
@@ -183,12 +205,12 @@ const BurgerCustomizationArea = () => {
               <div
                 ref={containerRef}
                 id="local-burger-custom"
-                className=" h-[300px] min-w-[300px] max-w-[350px] md:max-w-[500px]"
+                className="h-[400px] w-full"
               ></div>
             </CardContent>
           </Card>
 
-          <div className="flex max-w-xs flex-col gap-4">
+          <div className="w-full max-w-xs flex-col gap-4">
             <Card className="">
               <CardHeader>
                 <CardTitle>Ingredient Selection</CardTitle>
@@ -236,9 +258,12 @@ const BurgerCustomizationArea = () => {
             </Card>
 
             {/* <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} /> */}
-            <DownloadSharePanel />
+            {/* <DownloadSharePanel /> */}
           </div>
         </div>
+      </div>
+      <div className="absolute bottom-0 left-0 w-full text-center py-4 text-gray-500">
+        Created by Thomas Hillenmeyer @ Echo3D
       </div>
     </>
   )

@@ -24,64 +24,148 @@ const BurgerCustomizationArea = () => {
   const [scene, setScene] = useState<THREE.Scene | null>(null)
   const [objects, setObjects] = useState<THREE.Object3D[]>([])
   const [buns, setBuns] = useState<THREE.Object3D | null>(null)
-  const [echoDB, setEchoDB] = useState<any>(null)
+  // const [echoDB, setEchoDB] = useState<any>(null)
+  const [loadedIngredients, setLoadedIngredients] = useState(false);
+  const [ingredientObjects, setIngredientObjects] = useState<IngredientObject[]>([
+    {
+      name: "buns",
+      entryID: "2cc37c32-a2cf-47af-b4c9-668e8ef16ea3",
+      storageID: "5989ab4a-e2c4-403d-a031-3f44185188fa.glb",
+    },
+    {
+      name: "lettuce",
+      entryID: "82361576-6ac4-45c8-9a25-9bca0867ab13",
+      storageID: "2aca97a3-536a-4c9b-bd22-8617cf8bef68.glb",
+    },
+    {
+      name: "tomato",
+      entryID: "7858a907-64aa-4397-95ff-e24bdebdbcbe",
+      storageID: "f1ae914b-612b-404c-b563-1616dbf364a3.glb",
+    },
+    {
+      name: "cheese",
+      entryID: "b42018c2-61ef-4bed-b622-60e15bb2f356",
+      storageID: "e4bce58d-bfdd-40f0-870f-8471810072cd.glb",
+    },
+    {
+      name: "patty",
+      entryID: "3fbb6d3e-2621-403e-a391-d9c5ae918015",
+      storageID: "0e44319e-1f02-421e-9733-f64da1819401.glb",
+    },
+  ]);
 
-  // Fetch echo3D data
-  const fetchEcho3DData = async () => {
-    try {
-      const apiKey = "shrill-dew-9515"
-      const response = await fetch("https://api.echo3D.com/query?key=" + apiKey)
-      const json = await response.json()
-      setEchoDB(json)
-      // const EchoDB = json
-      console.log(json)
-      // console.log(typeof echoDB);
-    } catch (error) {
-      console.error("Error fetching echo3D data:", error)
-    }
+
+  // type IngredientObject = {
+  //   name: string;
+  //   entryID: string;
+  //   storageID: string;
+  //   blob?: Blob | null;
+  // };
+  
+
+  // const ingredientObjects: IngredientObject[] = [
+  //   {
+  //     name: "buns",
+  //     entryID: "2cc37c32-a2cf-47af-b4c9-668e8ef16ea3",
+  //     storageID: "5989ab4a-e2c4-403d-a031-3f44185188fa.glb",
+  //   },
+  //   {
+  //     name: "lettuce",
+  //     entryID: "82361576-6ac4-45c8-9a25-9bca0867ab13",
+  //     storageID: "2aca97a3-536a-4c9b-bd22-8617cf8bef68.glb",
+  //   },
+  //   {
+  //     name: "tomato",
+  //     entryID: "7858a907-64aa-4397-95ff-e24bdebdbcbe",
+  //     storageID: "f1ae914b-612b-404c-b563-1616dbf364a3.glb",
+  //   },
+  //   {
+  //     name: "cheese",
+  //     entryID: "b42018c2-61ef-4bed-b622-60e15bb2f356",
+  //     storageID: "e4bce58d-bfdd-40f0-870f-8471810072cd.glb",
+  //   },
+  //   {
+  //     name: "patty",
+  //     entryID: "3fbb6d3e-2621-403e-a391-d9c5ae918015",
+  //     storageID: "0e44319e-1f02-421e-9733-f64da1819401.glb",
+  //   },
+  // ]
+
+ const fetchIngredientsData = async () => {
+  try {
+    const link = "https://storage.echo3d.com/shrill-dew-9515/";
+    const updatedIngredientObjects = await Promise.all(
+      ingredientObjects.map(async (ingredient) => {
+        const response = await fetch(link + ingredient.storageID);
+        const ingredientGLB = await response.blob();
+        if (ingredientGLB) {
+          return { ...ingredient, blob: ingredientGLB };
+        } else {
+          console.error("Error fetching ingredient data: blob is null");
+          return { ...ingredient, blob: null };
+        }
+      })
+    );
+    setIngredientObjects(updatedIngredientObjects);
+    setLoadedIngredients(true);
+  } catch (error) {
+    console.error("Error fetching ingredients data:", error);
   }
-  const ingredientObjects = {
-    buns: "2cc37c32-a2cf-47af-b4c9-668e8ef16ea3",
-    lettuce: "82361576-6ac4-45c8-9a25-9bca0867ab13",
-    tomato: "7858a907-64aa-4397-95ff-e24bdebdbcbe",
-    cheese: "b42018c2-61ef-4bed-b622-60e15bb2f356",
-    patty: "3fbb6d3e-2621-403e-a391-d9c5ae918015",
-  }
-
-
+};
+  
 
   useEffect(() => {
-    fetchEcho3DData()
-
-
-
+    // fetchEcho3DData()
+    console.log(ingredientObjects)
+    fetchIngredientsData()
   }, [])
 
-  const handleObjectToggle = async (ingredientKey: string) => {
-    if (scene && echoDB) {
-      const objectId = ingredientObjects[ingredientKey];
-      const objectData = echoDB.db[objectId];
-      const objectURL = objectData.hologram.url;
-      console.log(objectURL);
-
-      const existingObject = objects.find(
-        (object) => object.userData.url === objectURL
-      )
-      if (existingObject) {
-        scene.remove(existingObject)
-        setObjects(objects.filter((object) => object !== existingObject))
-        toast.success("Object removed!")
-      } else {
-        await loadObject(scene, objectURL)
-        toast.success("Object added!")
-      }
-    } else {
-      toast.error("Scene not ready or echoDB not loaded.");
-    }
+const handleObjectToggle = async (ingredientName: string) => {
+  if (!loadedIngredients) {
+    toast.error("Ingredients data not loaded.");
+    return;
   }
 
-  const loadObject = async (scene: THREE.Scene, objectURL: string) => {
+  if (scene) {
+    const ingredient = ingredientObjects.find(
+      (i) => i.name === ingredientName
+    );
+
+    console.log(ingredient);
+
+    if (!ingredient || !ingredient.blob) {
+      toast.error("Ingredient data not loaded.");
+      return;
+    }
+
+    const objectURL = URL.createObjectURL(ingredient.blob);
+    const existingObject = scene.children.find(
+      (object) => object.userData.url === objectURL
+    );
+
+    if (existingObject instanceof THREE.Object3D) {
+      scene.remove(existingObject);
+    } else {
+      const loader = new GLTFLoader();
+      try {
+        const gltf = await loader.loadAsync(objectURL);
+        gltf.scene.userData.url = objectURL;
+        gltf.scene.rotation.x = -Math.PI / 2;
+        scene.add(gltf.scene);
+      } catch (error) {
+        console.error("Error loading object:", error);
+        toast.error("Failed to load object.");
+      }
+    }
+  } else {
+    toast.error("Scene not loaded.");
+  }
+};
+
+
+  const loadObject = async (scene: THREE.Scene, objectBlob: Blob) => {
     const loader = new GLTFLoader()
+    const objectURL = URL.createObjectURL(objectBlob)
 
     loader.load(
       objectURL,
@@ -100,6 +184,7 @@ const BurgerCustomizationArea = () => {
       }
     )
   }
+
 
   useEffect(() => {
     if (!containerRef.current) {
@@ -185,6 +270,8 @@ const BurgerCustomizationArea = () => {
     }
   }, [containerRef])
 
+  // LOAD BUNS
+
   useEffect(() => {
     if (scene) {
       const loader = new GLTFLoader()
@@ -193,7 +280,6 @@ const BurgerCustomizationArea = () => {
         "/buns.glb",
         (gltf) => {
           const object = gltf.scene
-          //   object.position.set(0, 0, 0)
           object.rotation.x = -Math.PI / 2
           setBuns(object)
           scene.add(object)

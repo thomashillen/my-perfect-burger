@@ -61,7 +61,7 @@ const BurgerCustomizationArea = () => {
     if (scene && echoDB) {
       const objectId = ingredientObjects[ingredientKey];
       const objectData = echoDB.db[objectId];
-      const objectURL = objectData.hologram.storageID;
+      const objectURL = objectData.hologram.url;
       console.log(objectURL);
 
       const existingObject = objects.find(

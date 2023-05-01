@@ -24,31 +24,46 @@ const BurgerCustomizationArea = () => {
   const [scene, setScene] = useState<THREE.Scene | null>(null)
   const [objects, setObjects] = useState<THREE.Object3D[]>([])
   const [buns, setBuns] = useState<THREE.Object3D | null>(null)
+  const [echoDB, setEchoDB] = useState<any>(null)
 
   // Fetch echo3D data
   const fetchEcho3DData = async () => {
     try {
       const apiKey = "shrill-dew-9515"
-      const response = await fetch(
-        "https://api.echo3D.com/query?key=" + apiKey
-      )
+      const response = await fetch("https://api.echo3D.com/query?key=" + apiKey)
       const json = await response.json()
-      // setEchoDB(json)
-      const EchoDB = json
+      setEchoDB(json)
+      // const EchoDB = json
       console.log(json)
       // console.log(typeof echoDB);
     } catch (error) {
       console.error("Error fetching echo3D data:", error)
     }
   }
+  const ingredientObjects = {
+    buns: "2cc37c32-a2cf-47af-b4c9-668e8ef16ea3",
+    lettuce: "82361576-6ac4-45c8-9a25-9bca0867ab13",
+    tomato: "7858a907-64aa-4397-95ff-e24bdebdbcbe",
+    cheese: "b42018c2-61ef-4bed-b622-60e15bb2f356",
+    patty: "3fbb6d3e-2621-403e-a391-d9c5ae918015",
+  }
+
+
 
   useEffect(() => {
     fetchEcho3DData()
-    
+
+
+
   }, [])
 
-  const handleObjectToggle = async (objectURL: string) => {
-    if (scene) {
+  const handleObjectToggle = async (ingredientKey: string) => {
+    if (scene && echoDB) {
+      const objectId = ingredientObjects[ingredientKey];
+      const objectData = echoDB.db[objectId];
+      const objectURL = objectData.hologram.storageID;
+      console.log(objectURL);
+
       const existingObject = objects.find(
         (object) => object.userData.url === objectURL
       )
@@ -61,7 +76,7 @@ const BurgerCustomizationArea = () => {
         toast.success("Object added!")
       }
     } else {
-      toast.error("Scene not ready.")
+      toast.error("Scene not ready or echoDB not loaded.");
     }
   }
 
@@ -197,7 +212,7 @@ const BurgerCustomizationArea = () => {
       <ToastContainer />
       <div className="relative w-full">
         <div className="flex h-full w-full flex-col items-center justify-center gap-6 md:flex-row">
-          <Card className="h-[500px] md:max-w-[50%] w-full">
+          <Card className="h-[500px] w-full md:max-w-[50%]">
             <CardHeader>
               <CardTitle>Burger Builder</CardTitle>
             </CardHeader>
@@ -222,7 +237,7 @@ const BurgerCustomizationArea = () => {
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
                   <Button
-                    onClick={() => handleObjectToggle("/patty.glb")}
+                    onClick={() => handleObjectToggle("patty")}
                     variant="outline"
                     className="border-zinc-500 bg-yellow-900 text-white"
                   >
@@ -230,7 +245,7 @@ const BurgerCustomizationArea = () => {
                     Patty
                   </Button>
                   <Button
-                    onClick={() => handleObjectToggle("/tomato.glb")}
+                    onClick={() => handleObjectToggle("tomato")}
                     variant="outline"
                     className="border-zinc-500 bg-red-500 text-white"
                   >
@@ -238,7 +253,7 @@ const BurgerCustomizationArea = () => {
                     Tomato
                   </Button>
                   <Button
-                    onClick={() => handleObjectToggle("/lettuce.glb")}
+                    onClick={() => handleObjectToggle("lettuce")}
                     variant="outline"
                     className="border-zinc-500 bg-lime-600 text-white"
                   >
@@ -246,7 +261,7 @@ const BurgerCustomizationArea = () => {
                     Lettuce
                   </Button>
                   <Button
-                    onClick={() => handleObjectToggle("/cheese.glb")}
+                    onClick={() => handleObjectToggle("cheese")}
                     variant="outline"
                     className="border-zinc-500 bg-yellow-500 text-white"
                   >
@@ -262,7 +277,7 @@ const BurgerCustomizationArea = () => {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 w-full text-center py-4 text-gray-500">
+      <div className="absolute bottom-0 left-0 w-full py-4 text-center text-gray-500">
         Created by Thomas Hillenmeyer @ Echo3D
       </div>
     </>

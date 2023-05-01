@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site"
 import { Button, buttonVariants } from "@/components/ui/button"
 import BurgerCustomizationArea from "@/components/BurgerCustomizationArea"
 import { Icons } from "@/components/icons"
-import LocalBurgerCustom from "@/components/LocalBurgerCustom";
+import LocalBurgerCustom from "@/components/BurgerCustomizationArea";
 
 export default function IndexPage() {
   return (
@@ -40,9 +40,12 @@ export default function IndexPage() {
       </div>
 
       {/* burger builder container containing the 3d model app and all its buttons */}
-      <div className="flex flex-col items-center justify-center gap-4">
-        <LocalBurgerCustom />
-        {/* <BurgerCustomizationArea /> */}
+      <div className="mb-10 flex flex-col items-center justify-center gap-4">
+        {/* <LocalBurgerCustom /> */}
+        <BurgerCustomizationArea />
+      </div>
+      <div className="absolute bottom-0 left-0 w-full py-4 text-center text-gray-500 ">
+        Created by Thomas Hillenmeyer @ Echo3D
       </div>
 
     </section>

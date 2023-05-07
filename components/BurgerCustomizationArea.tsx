@@ -17,6 +17,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Icons } from "@/components/icons"
 
 const BurgerCustomizationArea = () => {
@@ -26,49 +34,64 @@ const BurgerCustomizationArea = () => {
   const [buns, setBuns] = useState<THREE.Object3D | null>(null)
   // const [echoDB, setEchoDB] = useState<any>(null)
   const [loadedIngredients, setLoadedIngredients] = useState(false)
+  const [cheeseOptions, setCheeseOptions] = useState<any[]>([])
+  const [meatOptions, setMeatOptions] = useState<any[]>([])
+
+  //Defining the properties of each item in the Ingredients list
   type IngredientObject = {
-    name: string;
-    entryID: string;
-    storageID: string;
-    blob?: Blob | null;
-  };
+    name: string
+    entryID: string
+    storageID: string
+    ingredientType: string
+    blob?: Blob | null
+  }
+
+  //This is the list that holds all the ingredient objects
   const [ingredientObjects, setIngredientObjects] = useState<
     IngredientObject[]
-  >([
-    {
-      name: "buns",
-      entryID: "2cc37c32-a2cf-47af-b4c9-668e8ef16ea3",
-      storageID: "5989ab4a-e2c4-403d-a031-3f44185188fa.glb",
-    },
-    {
-      name: "lettuce",
-      entryID: "82361576-6ac4-45c8-9a25-9bca0867ab13",
-      storageID: "2aca97a3-536a-4c9b-bd22-8617cf8bef68.glb",
-    },
-    {
-      name: "tomato",
-      entryID: "7858a907-64aa-4397-95ff-e24bdebdbcbe",
-      storageID: "f1ae914b-612b-404c-b563-1616dbf364a3.glb",
-    },
-    {
-      name: "cheese",
-      entryID: "b42018c2-61ef-4bed-b622-60e15bb2f356",
-      storageID: "e4bce58d-bfdd-40f0-870f-8471810072cd.glb",
-    },
-    {
-      name: "patty",
-      entryID: "3fbb6d3e-2621-403e-a391-d9c5ae918015",
-      storageID: "0e44319e-1f02-421e-9733-f64da1819401.glb",
-    },
-  ])
+  >([])
 
+  const fetchEcho3dData = async () => {
+    try {
+      const apiKey = "shrill-dew-9515" //replace with your api key
+      const response = await fetch("https://api.echo3D.com/query?key=" + apiKey)
+      const json = await response.json()
+      // console.log(json)
+
+      const entriesArray = Object.values(json.db)
+
+      const burgerIngredients = entriesArray
+        .filter(
+          (entry: any) =>
+            entry.additionalData &&
+            entry.additionalData.tags &&
+            entry.additionalData.tags === "burger"
+        )
+        .map((entry: any) => {
+          const name = entry.hologram.filename.replace(".glb", "")
+          const storageID = entry.hologram.storageID
+          return {
+            name: name,
+            entryID: entry.id,
+            storageID: storageID,
+            ingredientType: "",
+          }
+        })
+
+      setIngredientObjects(burgerIngredients)
+      console.log("fetchEcho3dData", burgerIngredients)
+    } catch (error) {
+      console.error("Error fetching echo3D data:", error)
+    }
+  }
 
   const fetchIngredientsData = async () => {
     try {
-      const link = "https://storage.echo3d.com/shrill-dew-9515/"
       const updatedIngredientObjects = await Promise.all(
         ingredientObjects.map(async (ingredient) => {
-          const response = await fetch(link + ingredient.storageID)
+          const response = await fetch(
+            "https://storage.echo3d.com/shrill-dew-9515/" + ingredient.storageID
+          )
           const ingredientGLB = await response.blob()
           if (ingredientGLB) {
             return { ...ingredient, blob: ingredientGLB }
@@ -80,16 +103,25 @@ const BurgerCustomizationArea = () => {
       )
       setIngredientObjects(updatedIngredientObjects)
       setLoadedIngredients(true)
+      console.log("fetchIngredientsData", updatedIngredientObjects)
     } catch (error) {
       console.error("Error fetching ingredients data:", error)
     }
   }
 
+  const [ingredientsFetched, setIngredientsFetched] = useState(false);
+
   useEffect(() => {
-    // fetchEcho3DData()
-    console.log(ingredientObjects)
-    fetchIngredientsData()
-  }, [])
+    fetchEcho3dData();
+  }, []);
+  
+  useEffect(() => {
+    if (!ingredientsFetched && ingredientObjects.length > 0) {
+      fetchIngredientsData();
+      setIngredientsFetched(true);
+      console.log(ingredientObjects);
+    }
+  }, [ingredientObjects, ingredientsFetched]);
 
   const handleObjectToggle = async (ingredientName: string) => {
     if (!loadedIngredients) {
@@ -133,7 +165,6 @@ const BurgerCustomizationArea = () => {
     }
   }
 
-
   useEffect(() => {
     if (!containerRef.current) {
       return
@@ -157,14 +188,6 @@ const BurgerCustomizationArea = () => {
     camera.position.z = 15
     camera.position.y = 4
     camera.position.x = 0
-
-    // const controls = new OrbitControls(camera, renderer.domElement)
-    // controls.enableDamping = true
-    // controls.dampingFactor = 0.05
-    // controls.screenSpacePanning = false
-    // controls.minDistance = 20
-    // controls.maxDistance = 100
-    // // controls.maxPolarAngle = Math.PI / 2
 
     const updateSize = () => {
       if (!containerRef.current) {
@@ -269,39 +292,96 @@ const BurgerCustomizationArea = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <Button
-                    onClick={() => handleObjectToggle("patty")}
-                    variant="outline"
-                    className="border-zinc-500 bg-yellow-900 text-white"
-                  >
-                    <Icons.patty />
-                    Patty
-                  </Button>
-                  <Button
-                    onClick={() => handleObjectToggle("tomato")}
-                    variant="outline"
-                    className="border-zinc-500 bg-red-500 text-white"
-                  >
-                    <Icons.tomato />
-                    Tomato
-                  </Button>
-                  <Button
-                    onClick={() => handleObjectToggle("lettuce")}
-                    variant="outline"
-                    className="border-zinc-500 bg-lime-600 text-white"
-                  >
-                    <Icons.lettuce />
-                    Lettuce
-                  </Button>
-                  <Button
-                    onClick={() => handleObjectToggle("cheese")}
-                    variant="outline"
-                    className="border-zinc-500 bg-yellow-500 text-white"
-                  >
-                    <Icons.cheese />
-                    Cheese
-                  </Button>
+                <div className="flex flex-col gap-4">
+                  <label className="text-sm font-bold">Meat</label>
+                  <Select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="None" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {meatOptions.map((meatOption: any, index: number) => (
+                        <SelectItem
+                          key={index}
+                          value={meatOption.name}
+                          onClick={() => handleObjectToggle(meatOption.name)}
+                        >
+                          {meatOption.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <label className="text-sm font-bold">Cheese</label>
+                  <Select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="None" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cheeseOptions.map((cheeseOption: any, index: number) => (
+                        <SelectItem
+                          key={index}
+                          value={cheeseOption.name}
+                          onClick={() => handleObjectToggle(cheeseOption.name)}
+                        >
+                          {cheeseOption.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          id="lettuce-checkbox"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleObjectToggle("lettuce")
+                          }
+                        />
+                        <span className="ml-2">Lettuce</span>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          id="tomato-checkbox"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleObjectToggle("tomato")
+                          }
+                        />
+                        <span className="ml-2">Tomato</span>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          id="top-bun-checkbox"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleObjectToggle("topBun")
+                          }
+                        />
+                        <span className="ml-2">Top Bun</span>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          id="bottom-bun-checkbox"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleObjectToggle("bottomBun")
+                          }
+                        />
+                        <span className="ml-2">Bottom Bun</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -311,7 +391,6 @@ const BurgerCustomizationArea = () => {
           </div>
         </div>
       </div>
-      
     </>
   )
 }

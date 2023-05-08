@@ -120,7 +120,7 @@ const BurgerCustomizationArea = () => {
   
 
   const handleObjectToggle = async (
-    ingredientName: string | null,
+    ingredientName: string ,
     ingredientType: string
   ) => {
     const getPositionForIngredient = (
@@ -349,10 +349,10 @@ const BurgerCustomizationArea = () => {
     }
   }, [loadedIngredients, ingredientObjects])
 
-  // type Ingredient = {
-  //   // properties of Ingredient
-  //   type: string
-  // }
+  type Ingredient = {
+    // properties of Ingredient
+    type: string
+  }
   const handleChange = (
     event: ChangeEvent<HTMLSelectElement>,
     type: Ingredient["type"]

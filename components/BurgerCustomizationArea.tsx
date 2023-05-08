@@ -1,15 +1,11 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { ChangeEvent, useEffect, useRef, useState } from "react"
 import { ToastContainer, toast } from "react-toastify"
 import * as THREE from "three"
-import { OrbitControls } from "three-stdlib/controls/OrbitControls"
 import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"
 
-import DownloadSharePanel from "./DownloadSharePanel"
-// import IngredientSelectionPanel from "./IngredientSelectionPanel"
 import "react-toastify/dist/ReactToastify.css"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -17,25 +13,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Icons } from "@/components/icons"
 
 const BurgerCustomizationArea = () => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [scene, setScene] = useState<THREE.Scene | null>(null)
   const [objects, setObjects] = useState<THREE.Object3D[]>([])
   const [buns, setBuns] = useState<THREE.Object3D | null>(null)
-  // const [echoDB, setEchoDB] = useState<any>(null)
   const [loadedIngredients, setLoadedIngredients] = useState(false)
   const [cheeseOptions, setCheeseOptions] = useState<any[]>([])
   const [meatOptions, setMeatOptions] = useState<any[]>([])
+  const [selectedMeat, setSelectedMeat] = useState<string | null>(null)
+  const [selectedCheese, setSelectedCheese] = useState<string | null>(null)
+  const [selectedMeatText, setSelectedMeatText] = useState("None")
+  const [selectedCheeseText, setSelectedCheeseText] = useState("None")
 
   //Defining the properties of each item in the Ingredients list
   type IngredientObject = {
@@ -51,12 +41,12 @@ const BurgerCustomizationArea = () => {
     IngredientObject[]
   >([])
 
-  const fetchEcho3dData = async () => {
+  const fetchAllData = async () => {
     try {
       const apiKey = "shrill-dew-9515" //replace with your api key
       const response = await fetch("https://api.echo3D.com/query?key=" + apiKey)
       const json = await response.json()
-      // console.log(json)
+      console.log(json)
 
       const entriesArray = Object.values(json.db)
 
@@ -70,25 +60,17 @@ const BurgerCustomizationArea = () => {
         .map((entry: any) => {
           const name = entry.hologram.filename.replace(".glb", "")
           const storageID = entry.hologram.storageID
+          const ingredientType = entry.additionalData.ingredientType || ""
           return {
             name: name,
             entryID: entry.id,
             storageID: storageID,
-            ingredientType: "",
+            ingredientType: ingredientType,
           }
         })
 
-      setIngredientObjects(burgerIngredients)
-      console.log("fetchEcho3dData", burgerIngredients)
-    } catch (error) {
-      console.error("Error fetching echo3D data:", error)
-    }
-  }
-
-  const fetchIngredientsData = async () => {
-    try {
       const updatedIngredientObjects = await Promise.all(
-        ingredientObjects.map(async (ingredient) => {
+        burgerIngredients.map(async (ingredient) => {
           const response = await fetch(
             "https://storage.echo3d.com/shrill-dew-9515/" + ingredient.storageID
           )
@@ -101,31 +83,106 @@ const BurgerCustomizationArea = () => {
           }
         })
       )
+
       setIngredientObjects(updatedIngredientObjects)
       setLoadedIngredients(true)
-      console.log("fetchIngredientsData", updatedIngredientObjects)
+      console.log(
+        "All burger ingredients have been fetched and loaded successfully.",
+        updatedIngredientObjects
+      )
     } catch (error) {
-      console.error("Error fetching ingredients data:", error)
+      console.error("Error fetching echo3D data:", error)
     }
   }
 
-  const [ingredientsFetched, setIngredientsFetched] = useState(false);
-
   useEffect(() => {
-    fetchEcho3dData();
-  }, []);
+    fetchAllData()
+  }, [])
+
+  const positionIngredient = (
+    ingredientName: string,
+    position: THREE.Vector3,
+    rotation: THREE.Euler,
+    scale: THREE.Vector3
+  ) => {
+    if (scene) {
+      const ingredient = scene.children.find(
+        (object) => object.userData.name === ingredientName
+      );
   
-  useEffect(() => {
-    if (!ingredientsFetched && ingredientObjects.length > 0) {
-      fetchIngredientsData();
-      setIngredientsFetched(true);
-      console.log(ingredientObjects);
+      if (ingredient instanceof THREE.Object3D) {
+        ingredient.position.copy(position);
+        ingredient.rotation.copy(rotation);
+        ingredient.scale.copy(scale);
+      }
     }
-  }, [ingredientObjects, ingredientsFetched]);
+  };
+  
 
-  const handleObjectToggle = async (ingredientName: string) => {
+  const handleObjectToggle = async (
+    ingredientName: string | null,
+    ingredientType: string
+  ) => {
+    const getPositionForIngredient = (
+      ingredientType: string
+    ): [THREE.Vector3, THREE.Euler, THREE.Vector3] => {
+      // Define the position, rotation, and scale for each ingredient type here
+      // For example:
+      if (ingredientType === "meat") {
+        return [
+          new THREE.Vector3(0, 0.1, 10),
+          new THREE.Euler(0, Math.PI / 2, 0),
+          new THREE.Vector3(10,10,10),
+        ]
+      } else if (ingredientType === "cheese") {
+        return [
+          new THREE.Vector3(0, 10.5, 0),
+          new THREE.Euler(Math.PI/2,0, 0),
+          new THREE.Vector3(1, 1, 1),
+        ]
+      } else if (ingredientType === "lettuce") {
+        return [
+          new THREE.Vector3(0, 9, 0),
+          new THREE.Euler(Math.PI/2, 0 , 0),
+          new THREE.Vector3(1, 1, 1),
+        ]
+      } else if (ingredientType === "tomato") {
+        return [
+          new THREE.Vector3(0, 7.5, 0),
+          new THREE.Euler(Math.PI/2, 0, 0),
+          new THREE.Vector3(1, 1, 1),
+        ]
+      } else if (ingredientType === "topBun") {
+        return [
+          new THREE.Vector3(0, -5, 23.3),
+          new THREE.Euler(0, 0, 0),
+          new THREE.Vector3(10,10,10),
+        ]
+      } else if (ingredientType === "bottomBun") {
+        return [
+          new THREE.Vector3(0, 0.2, 0),
+          new THREE.Euler(Math.PI, 0 , 0),
+          new THREE.Vector3(1, 1, 1),
+        ]
+      } else {
+        return [
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Euler(0, 0, 0),
+          new THREE.Vector3(1, 1, 1),
+        ]
+      }
+    }
+
+    const [position, rotation, scale] = getPositionForIngredient(ingredientType);
+    positionIngredient(ingredientName, position, rotation, scale);
+
     if (!loadedIngredients) {
       toast.error("Ingredients data not loaded.")
+      return
+    }
+
+    if (ingredientName === null) {
+      removeIngredient(ingredientType)
       return
     }
 
@@ -148,13 +205,25 @@ const BurgerCustomizationArea = () => {
 
       if (existingObject instanceof THREE.Object3D) {
         scene.remove(existingObject)
+        if (ingredientType === "meat") {
+          setSelectedMeat(null)
+        } else if (ingredientType === "cheese") {
+          setSelectedCheese(null)
+        }
       } else {
         const loader = new GLTFLoader()
         try {
           const gltf = await loader.loadAsync(objectURL)
           gltf.scene.userData.name = ingredientName
-          gltf.scene.rotation.x = -Math.PI / 2
+          gltf.scene.position.copy(position)
+          gltf.scene.rotation.copy(rotation)
+          gltf.scene.scale.copy(scale)
           scene.add(gltf.scene)
+          if (ingredientType === "meat") {
+            setSelectedMeat(ingredientName)
+          } else if (ingredientType === "cheese") {
+            setSelectedCheese(ingredientName)
+          }
         } catch (error) {
           console.error("Error loading object:", error)
           toast.error("Failed to load object.")
@@ -241,28 +310,61 @@ const BurgerCustomizationArea = () => {
     }
   }, [containerRef])
 
-  // LOAD BUNS
+  const removeIngredient = (ingredientType: string) => {
+    if (scene) {
+      const ingredientToRemove = scene.children.find(
+        (object) =>
+          object.userData.name &&
+          ingredientObjects.find(
+            (i) =>
+              i.name === object.userData.name &&
+              i.ingredientType === ingredientType
+          )
+      )
+
+      if (ingredientToRemove) {
+        scene.remove(ingredientToRemove)
+      }
+    } else {
+      toast.error("Scene not loaded.")
+    }
+    if (ingredientType === "meat") {
+      setSelectedMeat(null)
+    } else if (ingredientType === "cheese") {
+      setSelectedCheese(null)
+    }
+  }
 
   useEffect(() => {
-    if (scene) {
-      const loader = new GLTFLoader()
-
-      loader.load(
-        "/buns.glb",
-        (gltf) => {
-          const object = gltf.scene
-          object.rotation.x = -Math.PI / 2
-          setBuns(object)
-          scene.add(object)
-        },
-        undefined,
-        (error) => {
-          console.error("An error occurred while loading the object:", error)
-          toast.error("An error occurred while loading the object")
-        }
+    if (loadedIngredients) {
+      const meats = ingredientObjects.filter(
+        (ingredient) => ingredient.ingredientType === "meat"
       )
+      setMeatOptions(meats)
+
+      const cheeses = ingredientObjects.filter(
+        (ingredient) => ingredient.ingredientType === "cheese"
+      )
+      setCheeseOptions(cheeses)
     }
-  }, [scene])
+  }, [loadedIngredients, ingredientObjects])
+
+  // type Ingredient = {
+  //   // properties of Ingredient
+  //   type: string
+  // }
+  const handleChange = (
+    event: ChangeEvent<HTMLSelectElement>,
+    type: Ingredient["type"]
+  ) => {
+    const value = event.target.value
+    if (value === "None") {
+      removeIngredient(type)
+    } else {
+      removeIngredient(type)
+      handleObjectToggle(value, type)
+    }
+  }
 
   return (
     <>
@@ -293,42 +395,33 @@ const BurgerCustomizationArea = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-4">
-                  <label className="text-sm font-bold">Meat</label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="None" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {meatOptions.map((meatOption: any, index: number) => (
-                        <SelectItem
-                          key={index}
-                          value={meatOption.name}
-                          onClick={() => handleObjectToggle(meatOption.name)}
-                        >
-                          {meatOption.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <label className="text-sm font-bold">Meat options:</label>
+                  {/* Meat */}
+                  <select
+                    value={selectedMeat || "None"}
+                    onChange={(event) => handleChange(event, "meat")}
+                  >
+                    <option value="None">None</option>
+                    {meatOptions.map((meatOption, index) => (
+                      <option key={index} value={meatOption.name}>
+                        {meatOption.name}
+                      </option>
+                    ))}
+                  </select>
 
-                  <label className="text-sm font-bold">Cheese</label>
-                  <Select>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="None" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cheeseOptions.map((cheeseOption: any, index: number) => (
-                        <SelectItem
-                          key={index}
-                          value={cheeseOption.name}
-                          onClick={() => handleObjectToggle(cheeseOption.name)}
-                        >
-                          {cheeseOption.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
+                  <label className="text-sm font-bold">Cheese options:</label>
+                  {/* Cheese */}
+                  <select
+                    value={selectedCheese || "None"}
+                    onChange={(event) => handleChange(event, "cheese")}
+                  >
+                    <option value="None">None</option>
+                    {cheeseOptions.map((cheeseOption, index) => (
+                      <option key={index} value={cheeseOption.name}>
+                        {cheeseOption.name}
+                      </option>
+                    ))}
+                  </select>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center">
                       <label className="inline-flex items-center">
@@ -336,7 +429,7 @@ const BurgerCustomizationArea = () => {
                           type="checkbox"
                           id="lettuce-checkbox"
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleObjectToggle("lettuce")
+                            handleObjectToggle("lettuce", "lettuce")
                           }
                         />
                         <span className="ml-2">Lettuce</span>
@@ -349,7 +442,7 @@ const BurgerCustomizationArea = () => {
                           type="checkbox"
                           id="tomato-checkbox"
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleObjectToggle("tomato")
+                            handleObjectToggle("tomato", "tomato")
                           }
                         />
                         <span className="ml-2">Tomato</span>
@@ -362,7 +455,7 @@ const BurgerCustomizationArea = () => {
                           type="checkbox"
                           id="top-bun-checkbox"
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleObjectToggle("topBun")
+                            handleObjectToggle("topBun", "topBun")
                           }
                         />
                         <span className="ml-2">Top Bun</span>
@@ -375,7 +468,7 @@ const BurgerCustomizationArea = () => {
                           type="checkbox"
                           id="bottom-bun-checkbox"
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            handleObjectToggle("bottomBun")
+                            handleObjectToggle("bottomBun", "bottomBun")
                           }
                         />
                         <span className="ml-2">Bottom Bun</span>
@@ -385,9 +478,6 @@ const BurgerCustomizationArea = () => {
                 </div>
               </CardContent>
             </Card>
-
-            {/* <IngredientSelectionPanel onIngredientAdd={handleIngredientAdd} /> */}
-            {/* <DownloadSharePanel /> */}
           </div>
         </div>
       </div>

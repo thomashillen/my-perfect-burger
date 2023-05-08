@@ -130,7 +130,7 @@ const BurgerCustomizationArea = () => {
       // For example:
       if (ingredientType === "meat") {
         return [
-          new THREE.Vector3(0, 0.1, 10),
+          new THREE.Vector3(-11, -2, 10),
           new THREE.Euler(0, Math.PI / 2, 0),
           new THREE.Vector3(10,10,10),
         ]
@@ -160,9 +160,9 @@ const BurgerCustomizationArea = () => {
         ]
       } else if (ingredientType === "bottomBun") {
         return [
-          new THREE.Vector3(0, 0.2, 0),
-          new THREE.Euler(Math.PI, 0 , 0),
-          new THREE.Vector3(1, 1, 1),
+          new THREE.Vector3(0, 1, 20),
+          new THREE.Euler(0, 0 , 0),
+          new THREE.Vector3(10,10,10),
         ]
       } else {
         return [

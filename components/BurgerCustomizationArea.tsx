@@ -17,15 +17,11 @@ import {
 const BurgerCustomizationArea = () => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [scene, setScene] = useState<THREE.Scene | null>(null)
-  const [objects, setObjects] = useState<THREE.Object3D[]>([])
-  const [buns, setBuns] = useState<THREE.Object3D | null>(null)
   const [loadedIngredients, setLoadedIngredients] = useState(false)
   const [cheeseOptions, setCheeseOptions] = useState<any[]>([])
   const [meatOptions, setMeatOptions] = useState<any[]>([])
   const [selectedMeat, setSelectedMeat] = useState<string | null>(null)
   const [selectedCheese, setSelectedCheese] = useState<string | null>(null)
-  const [selectedMeatText, setSelectedMeatText] = useState("None")
-  const [selectedCheeseText, setSelectedCheeseText] = useState("None")
 
   //Defining the properties of each item in the Ingredients list
   type IngredientObject = {
@@ -108,19 +104,18 @@ const BurgerCustomizationArea = () => {
     if (scene) {
       const ingredient = scene.children.find(
         (object) => object.userData.name === ingredientName
-      );
-  
+      )
+
       if (ingredient instanceof THREE.Object3D) {
-        ingredient.position.copy(position);
-        ingredient.rotation.copy(rotation);
-        ingredient.scale.copy(scale);
+        ingredient.position.copy(position)
+        ingredient.rotation.copy(rotation)
+        ingredient.scale.copy(scale)
       }
     }
-  };
-  
+  }
 
   const handleObjectToggle = async (
-    ingredientName: string ,
+    ingredientName: string,
     ingredientType: string
   ) => {
     const getPositionForIngredient = (
@@ -132,37 +127,37 @@ const BurgerCustomizationArea = () => {
         return [
           new THREE.Vector3(-11, -2, 10),
           new THREE.Euler(0, Math.PI / 2, 0),
-          new THREE.Vector3(10,10,10),
+          new THREE.Vector3(10, 10, 10),
         ]
       } else if (ingredientType === "cheese") {
         return [
           new THREE.Vector3(0, 10.5, 0),
-          new THREE.Euler(Math.PI/2,0, 0),
+          new THREE.Euler(Math.PI / 2, 0, 0),
           new THREE.Vector3(1, 1, 1),
         ]
       } else if (ingredientType === "lettuce") {
         return [
           new THREE.Vector3(0, 9, 0),
-          new THREE.Euler(Math.PI/2, 0 , 0),
+          new THREE.Euler(Math.PI / 2, 0, 0),
           new THREE.Vector3(1, 1, 1),
         ]
       } else if (ingredientType === "tomato") {
         return [
           new THREE.Vector3(0, 7.5, 0),
-          new THREE.Euler(Math.PI/2, 0, 0),
+          new THREE.Euler(Math.PI / 2, 0, 0),
           new THREE.Vector3(1, 1, 1),
         ]
       } else if (ingredientType === "topBun") {
         return [
           new THREE.Vector3(0, -5, 23.3),
           new THREE.Euler(0, 0, 0),
-          new THREE.Vector3(10,10,10),
+          new THREE.Vector3(10, 10, 10),
         ]
       } else if (ingredientType === "bottomBun") {
         return [
           new THREE.Vector3(0, 1, 20),
-          new THREE.Euler(0, 0 , 0),
-          new THREE.Vector3(10,10,10),
+          new THREE.Euler(0, 0, 0),
+          new THREE.Vector3(10, 10, 10),
         ]
       } else {
         return [
@@ -173,8 +168,8 @@ const BurgerCustomizationArea = () => {
       }
     }
 
-    const [position, rotation, scale] = getPositionForIngredient(ingredientType);
-    positionIngredient(ingredientName, position, rotation, scale);
+    const [position, rotation, scale] = getPositionForIngredient(ingredientType)
+    positionIngredient(ingredientName, position, rotation, scale)
 
     if (!loadedIngredients) {
       toast.error("Ingredients data not loaded.")
@@ -486,3 +481,4 @@ const BurgerCustomizationArea = () => {
 }
 
 export default BurgerCustomizationArea
+

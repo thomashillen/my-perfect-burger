@@ -1,5 +1,6 @@
 "use client"
 
+// Import required libraries and components
 import React, { ChangeEvent, useEffect, useRef, useState } from "react"
 import { ToastContainer, toast } from "react-toastify"
 import * as THREE from "three"
@@ -14,7 +15,9 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+// Main component for the Burger Customization Area
 const BurgerCustomizationArea = () => {
+  // Declare state variables and refs
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [scene, setScene] = useState<THREE.Scene | null>(null)
   const [loadedIngredients, setLoadedIngredients] = useState(false)
@@ -23,7 +26,7 @@ const BurgerCustomizationArea = () => {
   const [selectedMeat, setSelectedMeat] = useState<string | null>(null)
   const [selectedCheese, setSelectedCheese] = useState<string | null>(null)
 
-  //Defining the properties of each item in the Ingredients list
+  // Ingredient object properties
   type IngredientObject = {
     name: string
     entryID: string
@@ -32,14 +35,15 @@ const BurgerCustomizationArea = () => {
     blob?: Blob | null
   }
 
-  //This is the list that holds all the ingredient objects
+  // State to hold all the ingredient objects (here its using a list of dictionaries)
   const [ingredientObjects, setIngredientObjects] = useState<
     IngredientObject[]
   >([])
 
+  // Fetch all ingredients data from API
   const fetchAllData = async () => {
     try {
-      const apiKey = "shrill-dew-9515" //replace with your api key
+      const apiKey = "shrill-dew-9515" //replace with your api key to access your Echo3D console database
       const response = await fetch("https://api.echo3D.com/query?key=" + apiKey)
       const json = await response.json()
       console.log(json)
@@ -91,16 +95,19 @@ const BurgerCustomizationArea = () => {
     }
   }
 
+  // Fetch all data when the component mounts
   useEffect(() => {
     fetchAllData()
   }, [])
 
+  // Function to position an ingredient in the scene
   const positionIngredient = (
     ingredientName: string,
     position: THREE.Vector3,
     rotation: THREE.Euler,
     scale: THREE.Vector3
   ) => {
+    // Positioning logic
     if (scene) {
       const ingredient = scene.children.find(
         (object) => object.userData.name === ingredientName
@@ -114,10 +121,12 @@ const BurgerCustomizationArea = () => {
     }
   }
 
+  // Handle adding/removing an object in the scene
   const handleObjectToggle = async (
     ingredientName: string,
     ingredientType: string
   ) => {
+    // Function to get position, rotation, and scale for each ingredient type
     const getPositionForIngredient = (
       ingredientType: string
     ): [THREE.Vector3, THREE.Euler, THREE.Vector3] => {
@@ -125,15 +134,15 @@ const BurgerCustomizationArea = () => {
       // For example:
       if (ingredientType === "meat") {
         return [
-          new THREE.Vector3(-11, -2, 10),
-          new THREE.Euler(0, Math.PI / 2, 0),
+          new THREE.Vector3(0, -0.5, 0),
+          new THREE.Euler(Math.PI / 2, 0, 0),
           new THREE.Vector3(10, 10, 10),
         ]
       } else if (ingredientType === "cheese") {
         return [
           new THREE.Vector3(0, 10.5, 0),
           new THREE.Euler(Math.PI / 2, 0, 0),
-          new THREE.Vector3(1, 1, 1),
+          new THREE.Vector3(0.9, 0.9, 0.9),
         ]
       } else if (ingredientType === "lettuce") {
         return [
@@ -149,14 +158,14 @@ const BurgerCustomizationArea = () => {
         ]
       } else if (ingredientType === "topBun") {
         return [
-          new THREE.Vector3(0, -5, 23.3),
-          new THREE.Euler(0, 0, 0),
+          new THREE.Vector3(0, -0.5, 0),
+          new THREE.Euler(Math.PI, 0, 0),
           new THREE.Vector3(10, 10, 10),
         ]
       } else if (ingredientType === "bottomBun") {
         return [
-          new THREE.Vector3(0, 1, 20),
-          new THREE.Euler(0, 0, 0),
+          new THREE.Vector3(0, -1.5, 0),
+          new THREE.Euler(Math.PI / 2, 0, 0),
           new THREE.Vector3(10, 10, 10),
         ]
       } else {
@@ -168,6 +177,7 @@ const BurgerCustomizationArea = () => {
       }
     }
 
+    // Main logic for adding/removing objects in the scene
     const [position, rotation, scale] = getPositionForIngredient(ingredientType)
     positionIngredient(ingredientName, position, rotation, scale)
 
@@ -175,24 +185,19 @@ const BurgerCustomizationArea = () => {
       toast.error("Ingredients data not loaded.")
       return
     }
-
     if (ingredientName === null) {
       removeIngredient(ingredientType)
       return
     }
-
     if (scene) {
       const ingredient = ingredientObjects.find(
         (i) => i.name === ingredientName
       )
-
       console.log("Ingredient added: ", ingredient)
-
       if (!ingredient || !ingredient.blob) {
         toast.error("Ingredient data not loaded.")
         return
       }
-
       const objectURL = URL.createObjectURL(ingredient.blob)
       const existingObject = scene.children.find(
         (object) => object.userData.name === ingredientName
@@ -229,11 +234,12 @@ const BurgerCustomizationArea = () => {
     }
   }
 
+  // Initialize scene, camera, renderer, and event listeners
   useEffect(() => {
     if (!containerRef.current) {
       return
     }
-
+    // Initialization logic‚
     const scene = new THREE.Scene()
     setScene(scene)
     const camera = new THREE.PerspectiveCamera(
@@ -298,6 +304,7 @@ const BurgerCustomizationArea = () => {
 
     scene.add(new THREE.AmbientLight(0xfff0e3, 0.9))
 
+    // Clean up on component unmount
     return () => {
       renderer.dispose()
       currentContainerRef?.removeChild(renderer.domElement)
@@ -305,6 +312,7 @@ const BurgerCustomizationArea = () => {
     }
   }, [containerRef])
 
+  // Function to remove an ingredient from the scene
   const removeIngredient = (ingredientType: string) => {
     if (scene) {
       const ingredientToRemove = scene.children.find(
@@ -330,6 +338,7 @@ const BurgerCustomizationArea = () => {
     }
   }
 
+  // Update meat and cheese options when ingredients are loaded
   useEffect(() => {
     if (loadedIngredients) {
       const meats = ingredientObjects.filter(
@@ -344,6 +353,7 @@ const BurgerCustomizationArea = () => {
     }
   }, [loadedIngredients, ingredientObjects])
 
+  // Handle changes in ingredient selection
   type Ingredient = {
     // properties of Ingredient
     type: string
@@ -352,6 +362,7 @@ const BurgerCustomizationArea = () => {
     event: ChangeEvent<HTMLSelectElement>,
     type: Ingredient["type"]
   ) => {
+    // Handle selection changes
     const value = event.target.value
     if (value === "None") {
       removeIngredient(type)
@@ -361,7 +372,9 @@ const BurgerCustomizationArea = () => {
     }
   }
 
+  // Render the main component with UI elements and 3D scene
   return (
+    // JSX structure and event handling
     <>
       <ToastContainer />
       <div className="relative w-full">
@@ -481,4 +494,3 @@ const BurgerCustomizationArea = () => {
 }
 
 export default BurgerCustomizationArea
-

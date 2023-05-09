@@ -6,13 +6,58 @@ A web application that allows users to create and customize their own 3D burgers
 
 ## Table of Contents
 
-1. [Architecture](#architecture)
-2. [User Interface](#user-interface)
-3. [Burger Customization](#burger-customization)
-4. [Real-time 3D Rendering](#real-time-3d-rendering)
-5. [Installation](#installation)
-6. [Testing](#testing)
-6. [Demo/Screenshots](#Demo/Screenshots)
+1. [Setup](#setup)
+2. [Architecture](#architecture)
+3. [User Interface](#user-interface)
+4. [Burger Customization](#burger-customization)
+5. [Real-time 3D Rendering](#real-time-3d-rendering)
+6. [Demo/Screenshots](#demo-screenshots)
+
+
+## Setup
+
+Register for FREE at [echo3D](https://console.echo3D.com/#/auth/register).
+
+1. Clone the repository
+`git clone https://github.com/echo3Dco/my-perfect-burger.git`
+
+2. Install dependencies
+`npm install`
+
+### Connecting to your Echo3D console
+
+1. Navigate to `components/BurgerCustomizationArea.tsx` 
+2. On line 46, replace `const apiKey = "abcd-efgh-1234"` with your Echo3D api key to access your Echo3D console database.
+
+### Adding ingredients for the App in Echo3D console
+
+Upload test assets from `assets/` directory to your Echo3D console database 
+
+#### For all assets:
+- Add `'tags': 'burger'` to each asset's metadata in the Echo3D console. Assets are dynamic to what exists in the echo3D database. 
+- Only the objects containing this key/value pair will be added to the Application.
+
+#### For 'meat' or 'cheese' assets:
+- Add `'ingredientType': 'meat'` to each meat object's metadata in the echo3D console.
+- Add `'ingredientType': 'cheese'` to each cheese object's metadata in the echo3D console.
+
+### Start the development server
+`npm run dev`
+
+The web app will be accessible at `http://localhost:3000`.
+
+## Example:
+
+I have various cheese GLB objects in my database. 
+
+![console](screenshots/console.png)
+
+They will appear in the `Cheese options` selector if they are tagged with the following key/value pairs in their metadata:
+- `tags: burger`
+- `ingredientType: cheese`
+
+![cheese selector](screenshots/cheeseSelector.png)
+
 
 
 ## Architecture
@@ -56,18 +101,15 @@ High-quality, realistic 3D models were created for various ingredients:
 
 ### Asset Optimization
 
-1. Used echo3D to deliver optimized 3D objects for faster loading times and improved web performance.
-2. Assets are dynamic to what exists in the echo3D database. Objects added to Echo3D are automatically added to the Application when they have the tags: "burger"
-![console](screenshots/console.png)
-![cheese selector](screenshots/cheeseSelector.png)
+- Using echo3D to deliver optimized 3D objects for faster loading times and improved web performance.
 
 ## Burger Customization
 
 ### Functionality
 
-1. Select ingredients from dropdown menus and checkboxes
-2. Add or remove ingredients dynamically to the burger stack
-3. Visual feedback (e.g. Toast alerts) to indicate any errors occuring throughout the app
+- Select ingredients from dropdown menus and checkboxes
+- Add or remove ingredients dynamically to the burger stack
+- Visual feedback (e.g. Toast alerts) to indicate any errors occuring throughout the app, ex. failed to load objects.
 
 ## Real-time 3D Rendering
 
@@ -75,29 +117,16 @@ High-quality, realistic 3D models were created for various ingredients:
 
 Implemented Three.js to display the custom burger in real-time as the user adds or modifies ingredients.
 
-## Installation
-
-1. Clone the repository
-`git clone https://github.com/your-username/my-perfect-burger.git`
-
-2. Change into the project directory
-`cd my-perfect-burger`
-
-3. Install dependencies
-`npm install`
-
-4. Start the development server
-`npm run dev`
-
-The web app will be accessible at `http://localhost:3000`.
 
 ## Demo/Screenshots 
 
 
 Dark theme:
+
 ![dark mode](screenshots/darkMode.png)
 
 Light theme:
+
 ![light mode](screenshots/lightMode.png)
 
 

@@ -43,7 +43,7 @@ const BurgerCustomizationArea = () => {
   // Fetch all ingredients data from API
   const fetchAllData = async () => {
     try {
-      const apiKey = "shrill-dew-9515" //replace with your api key to access your Echo3D console database
+      const apiKey = "abcd-efgh-1234" //replace with your api key to access your Echo3D console database
       const response = await fetch("https://api.echo3D.com/query?key=" + apiKey)
       const json = await response.json()
       console.log(json)

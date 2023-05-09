@@ -58,6 +58,8 @@ High-quality, realistic 3D models were created for various ingredients:
 
 1. Used echo3D to deliver optimized 3D objects for faster loading times and improved web performance.
 2. Assets are dynamic to what exists in the echo3D database. Objects added to Echo3D are automatically added to the Application when they have the tags: "burger"
+![console](screenshots/console.png)
+![cheese selector](screenshots/cheeseSelector.png)
 
 ## Burger Customization
 
@@ -89,5 +91,15 @@ Implemented Three.js to display the custom burger in real-time as the user adds 
 
 The web app will be accessible at `http://localhost:3000`.
 
-## Demo/Screenshots
+## Demo/Screenshots 
+
+
+Dark theme:
+![dark mode](screenshots/darkMode.png)
+
+Light theme:
+![light mode](screenshots/lightMode.png)
+
+
+
 

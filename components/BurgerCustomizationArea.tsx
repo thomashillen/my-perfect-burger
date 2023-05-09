@@ -140,8 +140,8 @@ const BurgerCustomizationArea = () => {
         ]
       } else if (ingredientType === "cheese") {
         return [
-          new THREE.Vector3(0, 10.5, 0),
-          new THREE.Euler(Math.PI / 2, 0, 0),
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Euler(0, 0, 0),
           new THREE.Vector3(0.9, 0.9, 0.9),
         ]
       } else if (ingredientType === "lettuce") {

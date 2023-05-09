@@ -43,7 +43,7 @@ const BurgerCustomizationArea = () => {
   // Fetch all ingredients data from API
   const fetchAllData = async () => {
     try {
-      const apiKey = "abcd-efgh-1234" //replace with your api key to access your Echo3D console database
+      const apiKey = "your-api-key" //replace with your api key to access your Echo3D console database
       const response = await fetch("https://api.echo3D.com/query?key=" + apiKey)
       const json = await response.json()
       console.log(json)
@@ -72,7 +72,7 @@ const BurgerCustomizationArea = () => {
       const updatedIngredientObjects = await Promise.all(
         burgerIngredients.map(async (ingredient) => {
           const response = await fetch(
-            "https://storage.echo3d.com/shrill-dew-9515/" + ingredient.storageID
+            "https://storage.echo3d.com/your-api-key/" + ingredient.storageID
           )
           const ingredientGLB = await response.blob()
           if (ingredientGLB) {

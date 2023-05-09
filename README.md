@@ -27,7 +27,7 @@ Register for FREE at [echo3D](https://console.echo3D.com/#/auth/register).
 ### Connecting to your Echo3D console
 
 1. Navigate to `components/BurgerCustomizationArea.tsx` 
-2. On line 46, replace `const apiKey = "abcd-efgh-1234"` with your Echo3D api key to access your Echo3D console database.
+2. On lines 46 and 75, replace `apiKey = "your-api-key"` with your Echo3D API key to access your Echo3D console database.
 
 ### Adding ingredients for the App in Echo3D console
 
@@ -58,7 +58,8 @@ They will appear in the `Cheese options` selector if they are tagged with the fo
 
 ![cheese selector](screenshots/cheeseSelector.png)
 
-
+2122396200 customer service option 4
+say order number is this  and i give my tickets to sabine hillenmeyer
 
 ## Architecture
 

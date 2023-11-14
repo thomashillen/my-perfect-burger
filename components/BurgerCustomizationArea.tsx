@@ -1,20 +1,24 @@
-"use client"
+"use client";
 
 // Import required libraries and components
-import React, { ChangeEvent, useEffect, useRef, useState } from "react"
-import { ToastContainer, toast } from "react-toastify"
-import * as THREE from "three"
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import * as THREE from "three";
 // import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-import "react-toastify/dist/ReactToastify.css"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+
+
+import "react-toastify/dist/ReactToastify.css";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+
+
+
 
 // Main component for the Burger Customization Area
 const BurgerCustomizationArea = () => {
@@ -372,19 +376,42 @@ const BurgerCustomizationArea = () => {
     // properties of Ingredient
     type: string
   }
+  // const handleChange = (
+  //   event: ChangeEvent<HTMLSelectElement>,
+  //   type: Ingredient["type"]
+  // ) => {
+  //   // Handle selection changes
+  //   const value = event.target.value
+  //   if (value === "None") {
+  //     removeIngredient(type)
+  //   } else {
+  //     removeIngredient(type)
+  //     handleObjectToggle(value, type)
+  //   }
+  // }
+
   const handleChange = (
-    event: ChangeEvent<HTMLSelectElement>,
-    type: Ingredient["type"]
+    event: React.ChangeEvent<HTMLSelectElement> | string,
+    type: string
   ) => {
-    // Handle selection changes
-    const value = event.target.value
+    const value = typeof event === 'string' ? event : event.target.value;
+    // Now, 'value' holds the selected value regardless of the event source
+// Implement the rest of the handleChange logic using this 'value'
+    
     if (value === "None") {
       removeIngredient(type)
-    } else {
-      removeIngredient(type)
-      handleObjectToggle(value, type)
     }
-  }
+    else if (type === "meat") {
+      removeIngredient(type);
+      handleObjectToggle(value, "meat")
+      setSelectedMeat(value);
+    } else if (type === "cheese") {
+      removeIngredient(type)
+      handleObjectToggle(value, 'cheese');
+      setSelectedCheese(value);
+    } 
+    // Add more conditions if needed
+  };
 
   // Render the main component with UI elements and 3D scene
   return (
@@ -417,99 +444,95 @@ const BurgerCustomizationArea = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-4">
-                  <label className="text-sm font-bold">Meat options:</label>
                   {/* Meat */}
-                  <select
-                    value={selectedMeat || "None"}
-                    onChange={(event) => handleChange(event, "meat")}
+                  <Select
+                    onValueChange={(value) => handleChange(value, 'meat')}
+                    defaultValue={selectedMeat || "None"}
                   >
-                    <option value="None">None</option>
-                    {meatOptions.map((meatOption, index) => (
-                      <option key={index} value={meatOption.name}>
-                        {meatOption.name}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Meat" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="None">None</SelectItem>
+                      {meatOptions.map((meatOption, index) => (
+                        <SelectItem key={index} value={meatOption.name}>
+                          {meatOption.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
-                  <label className="text-sm font-bold">Cheese options:</label>
                   {/* Cheese */}
-                  <select
-                    value={selectedCheese || "None"}
-                    onChange={(event) => handleChange(event, "cheese")}
+                  <Select
+                    onValueChange={(value) => handleChange(value, 'cheese')}
+                    defaultValue={selectedCheese || "None"}
                   >
-                    <option value="None">None</option>
-                    {cheeseOptions.map((cheeseOption, index) => (
-                      <option key={index} value={cheeseOption.name}>
-                        {cheeseOption.name}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Cheese" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="None">None</SelectItem>
+                      {cheeseOptions.map((cheeseOption, index) => (
+                        <SelectItem key={index} value={cheeseOption.name}>
+                          {cheeseOption.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
 
-                  {/* Lettuce */}
                   <div className="grid grid-cols-2 gap-4">
+                    {/* Lettuce */}
                     <div className="flex items-center">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          id="lettuce-checkbox"
-                          checked={selectedLettuce}
-                          onChange={(e) => {
-                            setSelectedLettuce(e.target.checked)
-                            handleObjectToggle("lettuce", "lettuce")
-                          }}
-                        />
-                        <span className="ml-2">Lettuce</span>
-                      </label>
+                      <Checkbox
+                        className="mr-2"
+                        checked={selectedLettuce}
+                        onCheckedChange={(checked) => {
+                          setSelectedLettuce(checked)
+                          handleObjectToggle("lettuce", "lettuce")
+                        }}
+                      />
+                      <Label>Lettuce</Label>
                     </div>
 
                     {/* Tomato */}
                     <div className="flex items-center">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          id="tomato-checkbox"
-                          checked={selectedTomato}
-                          onChange={(e) => {
-                            setSelectedTomato(e.target.checked)
-                            handleObjectToggle("tomato", "tomato")
-                          }}
-                        />
-                        <span className="ml-2">Tomato</span>
-                      </label>
+                      <Checkbox
+                        className="mr-2"
+                        checked={selectedTomato}
+                        onCheckedChange={(checked) => {
+                          setSelectedTomato(checked)
+                          handleObjectToggle("tomato", "tomato")
+                        }}
+                      />
+                      <Label>Tomato</Label>
                     </div>
 
                     {/* Top Bun */}
                     <div className="flex items-center">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          id="top-bun-checkbox"
-                          checked={selectedTopBun}
-                          onChange={(e) => {
-                            setSelectedTopBun(e.target.checked)
-                            handleObjectToggle("topBun", "topBun")
-                          }}
-                        />
-                        <span className="ml-2">Top Bun</span>
-                      </label>
+                      <Checkbox
+                        className="mr-2"
+                        checked={selectedTopBun}
+                        onCheckedChange={(checked) => {
+                          setSelectedTopBun(checked)
+                          handleObjectToggle("topBun", "topBun")
+                        }}
+                      />
+                      <Label>Top Bun</Label>
                     </div>
 
                     {/* Bottom Bun */}
                     <div className="flex items-center">
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          id="bottom-bun-checkbox"
-                          checked={selectedBottomBun}
-                          onChange={(e) => {
-                            setSelectedBottomBun(e.target.checked)
-                            handleObjectToggle("bottomBun", "bottomBun")
-                          }}
-                        />
-                        <span className="ml-2">Bottom Bun</span>
-                      </label>
+                      <Checkbox
+                        className="mr-2"
+                        checked={selectedBottomBun}
+                        onCheckedChange={(checked) => {
+                          setSelectedBottomBun(checked)
+                          handleObjectToggle("bottomBun", "bottomBun")
+                        }}
+                      />
+                      <Label>Bottom Bun</Label>
                     </div>
-                    
                   </div>
                 </div>
               </CardContent>

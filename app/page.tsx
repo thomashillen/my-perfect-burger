@@ -13,7 +13,7 @@ export default function IndexPage() {
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter sm:text-3xl md:text-5xl lg:text-6xl">
           My Perfect Burger <br className="hidden sm:inline" />
         </h1>
-        <p className="text-muted-foreground max-w-[700px] md:text-lg ">
+        <p className="max-w-[700px] text-muted-foreground md:text-lg ">
           This is a demo of Echo3D&apos;s 3D model hosting service. It uses
           Next.js and Echo3D&apos;s JavaScript SDK to display a 3D model of a
           burger.

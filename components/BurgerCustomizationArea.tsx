@@ -1,19 +1,20 @@
-"use client"
+"use client";
 
 // Import required libraries and components
-import React, { ChangeEvent, useEffect, useRef, useState } from "react"
-import { ToastContainer, toast } from "react-toastify"
-import * as THREE from "three"
-import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import * as THREE from "three";
+// import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-import "react-toastify/dist/ReactToastify.css"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+
+
+import "react-toastify/dist/ReactToastify.css";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+
+
+
 
 // Main component for the Burger Customization Area
 const BurgerCustomizationArea = () => {
@@ -43,7 +44,7 @@ const BurgerCustomizationArea = () => {
   // Fetch all ingredients data from API
   const fetchAllData = async () => {
     try {
-      const apiKey = "your-api-key" //replace with your api key to access your Echo3D console database
+      const apiKey = "shrill-dew-9515" //replace with your api key to access your Echo3D console database
       const response = await fetch("https://api.echo3D.com/query?key=" + apiKey)
       const json = await response.json()
       console.log(json)
@@ -72,7 +73,7 @@ const BurgerCustomizationArea = () => {
       const updatedIngredientObjects = await Promise.all(
         burgerIngredients.map(async (ingredient) => {
           const response = await fetch(
-            "https://storage.echo3d.com/your-api-key/" + ingredient.storageID
+            "https://storage.echo3d.com/" + apiKey + "/" + ingredient.storageID
           )
           const ingredientGLB = await response.blob()
           if (ingredientGLB) {
@@ -130,8 +131,7 @@ const BurgerCustomizationArea = () => {
     const getPositionForIngredient = (
       ingredientType: string
     ): [THREE.Vector3, THREE.Euler, THREE.Vector3] => {
-      // Define the position, rotation, and scale for each ingredient type here
-      // For example:
+      // Define the position, rotation, and scale for each ingredient type 
       if (ingredientType === "meat") {
         return [
           new THREE.Vector3(0, -0.5, 0),

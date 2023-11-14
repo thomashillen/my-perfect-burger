@@ -1,20 +1,20 @@
-"use client";
+"use client"
 
 // Import required libraries and components
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import * as THREE from "three";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react"
+import { ToastContainer, toast } from "react-toastify"
+import * as THREE from "three"
 // import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
-
-
-import "react-toastify/dist/ReactToastify.css";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-
-
-
+import "react-toastify/dist/ReactToastify.css"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 // Main component for the Burger Customization Area
 const BurgerCustomizationArea = () => {
@@ -26,6 +26,10 @@ const BurgerCustomizationArea = () => {
   const [meatOptions, setMeatOptions] = useState<any[]>([])
   const [selectedMeat, setSelectedMeat] = useState<string | null>(null)
   const [selectedCheese, setSelectedCheese] = useState<string | null>(null)
+  const [selectedTopBun, setSelectedTopBun] = useState<boolean>(true)
+  const [selectedBottomBun, setSelectedBottomBun] = useState<boolean>(true)
+  const [selectedLettuce, setSelectedLettuce] = useState<boolean>(true)
+  const [selectedTomato, setSelectedTomato] = useState<boolean>(true)
 
   // Ingredient object properties
   type IngredientObject = {
@@ -101,6 +105,16 @@ const BurgerCustomizationArea = () => {
     fetchAllData()
   }, [])
 
+  // Automatically load default ingredients after fetching data
+  useEffect(() => {
+    if (loadedIngredients) {
+      handleObjectToggle("topBun", "topBun")
+      handleObjectToggle("bottomBun", "bottomBun")
+      if (selectedLettuce) handleObjectToggle("lettuce", "lettuce")
+      if (selectedTomato) handleObjectToggle("tomato", "tomato")
+    }
+  }, [loadedIngredients])
+
   // Function to position an ingredient in the scene
   const positionIngredient = (
     ingredientName: string,
@@ -131,7 +145,7 @@ const BurgerCustomizationArea = () => {
     const getPositionForIngredient = (
       ingredientType: string
     ): [THREE.Vector3, THREE.Euler, THREE.Vector3] => {
-      // Define the position, rotation, and scale for each ingredient type 
+      // Define the position, rotation, and scale for each ingredient type
       if (ingredientType === "meat") {
         return [
           new THREE.Vector3(0, -0.5, 0),
@@ -430,58 +444,72 @@ const BurgerCustomizationArea = () => {
                       </option>
                     ))}
                   </select>
+
+                  {/* Lettuce */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center">
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
                           id="lettuce-checkbox"
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          checked={selectedLettuce}
+                          onChange={(e) => {
+                            setSelectedLettuce(e.target.checked)
                             handleObjectToggle("lettuce", "lettuce")
-                          }
+                          }}
                         />
                         <span className="ml-2">Lettuce</span>
                       </label>
                     </div>
 
+                    {/* Tomato */}
                     <div className="flex items-center">
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
                           id="tomato-checkbox"
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          checked={selectedTomato}
+                          onChange={(e) => {
+                            setSelectedTomato(e.target.checked)
                             handleObjectToggle("tomato", "tomato")
-                          }
+                          }}
                         />
                         <span className="ml-2">Tomato</span>
                       </label>
                     </div>
 
+                    {/* Top Bun */}
                     <div className="flex items-center">
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
                           id="top-bun-checkbox"
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          checked={selectedTopBun}
+                          onChange={(e) => {
+                            setSelectedTopBun(e.target.checked)
                             handleObjectToggle("topBun", "topBun")
-                          }
+                          }}
                         />
                         <span className="ml-2">Top Bun</span>
                       </label>
                     </div>
 
+                    {/* Bottom Bun */}
                     <div className="flex items-center">
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
                           id="bottom-bun-checkbox"
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          checked={selectedBottomBun}
+                          onChange={(e) => {
+                            setSelectedBottomBun(e.target.checked)
                             handleObjectToggle("bottomBun", "bottomBun")
-                          }
+                          }}
                         />
                         <span className="ml-2">Bottom Bun</span>
                       </label>
                     </div>
+                    
                   </div>
                 </div>
               </CardContent>

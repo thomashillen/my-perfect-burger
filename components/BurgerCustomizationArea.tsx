@@ -488,7 +488,8 @@ const BurgerCustomizationArea = () => {
                         className="mr-2"
                         checked={selectedLettuce}
                         onCheckedChange={(checked) => {
-                          setSelectedLettuce(checked)
+                          let isChecked = checked === true
+                          setSelectedLettuce(isChecked)
                           handleObjectToggle("lettuce", "lettuce")
                         }}
                       />
@@ -501,7 +502,8 @@ const BurgerCustomizationArea = () => {
                         className="mr-2"
                         checked={selectedTomato}
                         onCheckedChange={(checked) => {
-                          setSelectedTomato(checked)
+                          let isChecked = checked === true
+                          setSelectedTomato(isChecked)
                           handleObjectToggle("tomato", "tomato")
                         }}
                       />
@@ -514,7 +516,8 @@ const BurgerCustomizationArea = () => {
                         className="mr-2"
                         checked={selectedTopBun}
                         onCheckedChange={(checked) => {
-                          setSelectedTopBun(checked)
+                          let isChecked = checked === true
+                          setSelectedTopBun(isChecked)
                           handleObjectToggle("topBun", "topBun")
                         }}
                       />
@@ -527,7 +530,8 @@ const BurgerCustomizationArea = () => {
                         className="mr-2"
                         checked={selectedBottomBun}
                         onCheckedChange={(checked) => {
-                          setSelectedBottomBun(checked)
+                          let isChecked = checked === true
+                          setSelectedBottomBun(isChecked)
                           handleObjectToggle("bottomBun", "bottomBun")
                         }}
                       />

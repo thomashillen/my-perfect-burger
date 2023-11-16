@@ -15,6 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SelectLabel } from "@radix-ui/react-select";
 
 
 
@@ -449,6 +450,7 @@ const BurgerCustomizationArea = () => {
                     onValueChange={(value) => handleChange(value, 'meat')}
                     defaultValue={selectedMeat || "None"}
                   >
+                    <Label>Meat patty selection:</Label>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Meat" />
                     </SelectTrigger>
@@ -467,6 +469,7 @@ const BurgerCustomizationArea = () => {
                     onValueChange={(value) => handleChange(value, 'cheese')}
                     defaultValue={selectedCheese || "None"}
                   >
+                    <Label>Cheese Selection:</Label>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Cheese" />
                     </SelectTrigger>
